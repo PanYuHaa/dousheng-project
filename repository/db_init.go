@@ -27,7 +27,6 @@ func Init() {
 	} else {
 		fmt.Println("The database is initialized successful.")
 	}
-	fmt.Println(DB.Find(&model.User{}).RowsAffected)
 }
 
 func ConnectDB() (conn *gorm.DB) {
@@ -39,7 +38,7 @@ func ConnectDB() (conn *gorm.DB) {
 	return conn
 }
 
-func InitUser() error{
+func InitUser() error {
 	var err error
 	m := DB.Migrator()
 	if m.HasTable(&model.User{}) {
@@ -49,7 +48,7 @@ func InitUser() error{
 	return err
 }
 
-func InitVideo() error{
+func InitVideo() error {
 	var err error
 	m := DB.Migrator()
 	if m.HasTable(&model.Video{}) {

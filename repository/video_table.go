@@ -13,6 +13,7 @@ func GetVideo(videoId int64) model.Video {
 
 func GetVideoAmount() int64 {
 	// 从db中获取video的数量
-	return DB.Find(&model.Video{}).RowsAffected
+	var count int64
+	DB.Model(&model.Video{}).Where("name <> ?", "").Count(&count)
+	return count
 }
-
