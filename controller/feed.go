@@ -19,5 +19,6 @@ func Feed(c *gin.Context) {
 		Response:  service.GetVideoRsp(),
 		VideoList: service.GetVideoList(),
 		NextTime:  service.GetCreateTime(),
+		//NextTime:  time.Now().Unix(),
 	})
 }
