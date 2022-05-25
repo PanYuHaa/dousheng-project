@@ -17,3 +17,9 @@ func TimeLimitAmount(timeLimit int64) int64 {
 	DB.Model(&model.Video{}).Where("create_time < ?", timeLimit).Count(&count)
 	return count
 }
+
+func GetVideosByName(userName string) []model.Video {
+	var videos []model.Video
+	DB.Model(&model.Video{}).Where("name = ?", userName).Find(&videos)
+	return videos
+}

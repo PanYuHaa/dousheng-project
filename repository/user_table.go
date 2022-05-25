@@ -11,3 +11,10 @@ var DemoUser = model.User{
 	FollowerCount: 0,
 	IsFollow:      false,
 }
+
+func GetUserById(userId int64) model.User {
+	// 从db中获取user
+	var user model.User
+	DB.Model(&model.User{}).Find(&user, userId)
+	return user
+}
