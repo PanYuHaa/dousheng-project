@@ -3,41 +3,49 @@ package service
 import (
 	"dousheng-demo/model"
 	"dousheng-demo/repository"
-	"time"
 )
 
-func GetVideoList() []model.Video{
-	if repository.GetVideoAmount() == 0 {
+// var startId = repository.TimeLimitAmount(9999999999) // 初始化startId
+var startId int64
+var count int64
+
+func GetVideoList() []model.Video {
+	if startId == 0 {
 		return nil
 	}
-	// 单次提取视频有30个限制
-	var len int64
-	if repository.GetVideoAmount() > 30{
-		len = 30
+
+	videoList := make([]model.Video, 0)
+	count = 0 // 初始化计数器
+	for {
+		videoList = append(videoList, repository.GetVideoById(startId))
+		count++
+		startId--
+		// 如果list满30个，返回videoList
+		if count == 30 {
+			startId = repository.TimeLimitAmount(videoList[29].CreateTime)
+			return videoList
+		}
+		// 如果原数据库中已经没有video，返回videoList
+		if startId == 0 {
+			startId = repository.TimeLimitAmount(9999999999)
+			return videoList
+		}
+	}
+}
+
+func GetVideoRsp() model.Response {
+	if startId == 0 {
+		return model.Response{StatusCode: -1, StatusMsg: "No video"}
 	} else {
-		len = repository.GetVideoAmount()
-	}
-	videoList := make([]model.Video, len)
-	j := 0
-	for i := repository.GetVideoAmount(); i > 0; i--{
-		videoList[j] = repository.GetVideo(i)
-		j++
-	}
-	return videoList
-}
-
-func GetVideoRsp() model.Response{
-	if repository.GetVideoAmount() == 0 {
-		return model.Response{StatusCode: -1}
-	}else {
-		return model.Response{StatusCode: 0, StatusMsg: "Success."}
+		return model.Response{StatusCode: 0, StatusMsg: "Success"}
 	}
 }
 
-func GetVideoTime() int64 {
+func GetCreateTime() int64 {
 	if GetVideoList() == nil {
 		return 0
 	} else {
-		return time.Now().Unix()
+		lastId := count - 1
+		return GetVideoList()[lastId].CreateTime // 获取最后一个播放视频的创建时间，用作下次提取list的开始
 	}
 }

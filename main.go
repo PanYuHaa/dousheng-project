@@ -2,11 +2,13 @@ package main
 
 import (
 	"dousheng-demo/repository"
+	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	repository.Init()
+	service.Init()
 
 	r := gin.Default()
 
