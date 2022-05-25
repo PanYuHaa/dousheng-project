@@ -9,10 +9,6 @@ var startId int64
 var count int64
 
 func GetVideoList() []model.Video {
-	//if startId == 0 {
-	//	return nil
-	//}
-
 	videoList := make([]model.Video, 0)
 	count = 0 // 初始化计数器
 	for {
