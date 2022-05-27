@@ -14,7 +14,7 @@ func GetUserById(userId int64) model.User {
 func IsUserExist(username string) bool {
 	var user model.User
 	DB.Table("user_infos").Where("name = ?", username).Find(&user)
-	if user.Name == username {
+	if user.NickName == username {
 		return true
 	}
 	return false
@@ -27,7 +27,7 @@ func GetUsersAmount() int64 {
 	return count
 }
 
-//func AddUserClaim(account model.UserClaim) error{
-//	dbRes := DB.Model(&model.UserClaim{}).Create(&account)
-//	return dbRes.Error
-//}
+func AddAccount(account model.Account) error {
+	dbRes := DB.Model(&model.Account{}).Create(&account)
+	return dbRes.Error
+}

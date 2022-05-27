@@ -22,6 +22,7 @@ func Init() {
 
 	err = InitUser()
 	err = InitVideo()
+	err = InitAccount()
 	if err != nil {
 		panic(err)
 	} else {
@@ -55,5 +56,15 @@ func InitVideo() error {
 		return nil
 	}
 	err = m.CreateTable(&model.Video{})
+	return err
+}
+
+func InitAccount() error {
+	var err error
+	m := DB.Migrator()
+	if m.HasTable(&model.Account{}) {
+		return nil
+	}
+	err = m.CreateTable(&model.Account{})
 	return err
 }

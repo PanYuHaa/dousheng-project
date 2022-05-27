@@ -1,6 +1,7 @@
 package service
 
 import (
+	"dousheng-demo/model"
 	"dousheng-demo/repository"
 )
 
@@ -12,6 +13,6 @@ func IsUserExist(username string) bool {
 	return repository.IsUserExist(username)
 }
 
-//func RegisterAccount(userClaim model.UserClaim) error {
-//	return repository.AddUserClaim(userClaim)
-//}
+func AddAccount(account model.Account) error {
+	return repository.AddAccount(account)
+}

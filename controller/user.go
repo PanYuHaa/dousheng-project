@@ -34,11 +34,8 @@ func Register(c *gin.Context) {
 		})
 	} else {
 		atomic.AddInt64(&userIdSequence, 1) // 对addr指向的值加上delta，再返回*addr
-		//newUserClaim := model.UserClaim{
-		//	User: model.User{
-		//		Id: userIdSequence,
-		//		Name: username,
-		//	},
+		//newAccount := model.Account{
+		//	User:
 		//	Password: password,
 		//}
 		//err := service.RegisterAccount()	// 注册账号
