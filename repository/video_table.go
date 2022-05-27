@@ -18,8 +18,8 @@ func TimeLimitAmount(timeLimit int64) int64 {
 	return count
 }
 
-func GetVideosByName(userName string) []model.Video {
+func GetVideosByName(nickname string) []model.Video {
 	var videos []model.Video
-	DB.Model(&model.Video{}).Where("name = ?", userName).Find(&videos)
+	DB.Model(&model.Video{}).Where("name = ?", nickname).Find(&videos)
 	return videos
 }

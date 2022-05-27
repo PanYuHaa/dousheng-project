@@ -8,18 +8,6 @@ import (
 	"sync/atomic"
 )
 
-//var usersLoginInfo = map[string]model.User{
-//	"zhangleidouyin": {
-//		Id:            1,
-//		Name:          "zhanglei",
-//		FollowCount:   10,
-//		FollowerCount: 5,
-//		IsFollow:      true,
-//	},
-//}
-
-//var usersLoginInfo = map[string]model.User{}
-
 var userIdSequence int64
 
 func Register(c *gin.Context) {
@@ -28,24 +16,28 @@ func Register(c *gin.Context) {
 
 	token := username + password
 
-	if service.IsUserExist(username) {
+	if service.IsAccountExist(username) {
 		c.JSON(http.StatusOK, model.UserLoginResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: "User already exist"},
 		})
 	} else {
 		atomic.AddInt64(&userIdSequence, 1) // 对addr指向的值加上delta，再返回*addr
-		//newAccount := model.Account{
-		//	User:
-		//	Password: password,
-		//}
-		//err := service.RegisterAccount()	// 注册账号
-		//if err != nil {
-		//	c.JSON(http.StatusOK, model.UserLoginResponse{
-		//		Response: model.Response{StatusCode: -1, StatusMsg: "Register Account failed"},
-		//		UserId: userIdSequence,
-		//		Token:  token,
-		//	})
-		//}
+		newAccount := model.Account{
+			Id:       userIdSequence,
+			UserName: username,
+			PassWord: password,
+		}
+		newUser := model.User{
+			Id:       userIdSequence,
+			NickName: username,
+		}
+		err := service.AddAccount(newAccount, newUser) // 注册账号
+		if err != nil {
+			c.JSON(http.StatusOK, model.UserLoginResponse{
+				Response: model.Response{StatusCode: -1, StatusMsg: "Register Account failed"},
+			})
+			return
+		}
 		c.JSON(http.StatusOK, model.UserLoginResponse{
 			Response: model.Response{StatusCode: 0, StatusMsg: "Success"},
 			UserId:   userIdSequence,
