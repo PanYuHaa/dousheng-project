@@ -1,15 +1,19 @@
 package main
 
 import (
+	"dousheng-demo/controller"
 	"dousheng-demo/repository"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 )
 
-func main() {
+func init() {
 	repository.Init()
 	service.Init()
+	controller.Init()
+}
 
+func main() {
 	r := gin.Default()
 
 	initRouter(r)

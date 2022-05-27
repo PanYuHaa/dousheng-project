@@ -23,6 +23,6 @@ func PublishList(c *gin.Context) {
 		Response: model.Response{
 			StatusCode: 0,
 		},
-		VideoList: service.GetPublishList(userId + 1), // 因为下标号和数据库的id不对应
+		VideoList: service.GetPublishList(userId),
 	})
 }
