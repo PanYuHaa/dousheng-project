@@ -46,6 +46,7 @@ func Register(c *gin.Context) {
 		})
 	}
 }
+
 func Login(c *gin.Context) {
 	fmt.Printf("get here")
 	username := c.Query("username")
