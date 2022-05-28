@@ -62,7 +62,7 @@ func Login(c *gin.Context) {
 			token := username + password
 			c.JSON(http.StatusOK, model.UserLoginResponse{
 				Response: model.Response{StatusCode: 0, StatusMsg: "Login Success"},
-				UserId:   service.GetUseridByName(username),
+				UserId:   service.GetUserIdByName(username),
 				Token:    token,
 			})
 		}
