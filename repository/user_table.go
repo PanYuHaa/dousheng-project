@@ -19,7 +19,6 @@ func IsAccountExist(username string) bool {
 	} else {
 		return false
 	}
-
 }
 
 func GetUsersAmount() int64 {
