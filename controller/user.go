@@ -3,6 +3,7 @@ package controller
 import (
 	"dousheng-demo/model"
 	"dousheng-demo/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"sync/atomic"
@@ -42,6 +43,31 @@ func Register(c *gin.Context) {
 			Response: model.Response{StatusCode: 0, StatusMsg: "Success"},
 			UserId:   userIdSequence,
 			Token:    token,
+		})
+	}
+}
+func Login(c *gin.Context) {
+	fmt.Printf("get here")
+	username := c.Query("username")
+	password := c.Query("password")
+	t := service.IsAccountExist(username)
+	if t {
+		result := service.ComparePassword(password, username)
+		if !result {
+			c.JSON(http.StatusOK, model.UserLoginResponse{
+				Response: model.Response{StatusCode: 1, StatusMsg: "Password Wrong"},
+			})
+		} else {
+			token := username + password
+			c.JSON(http.StatusOK, model.UserLoginResponse{
+				Response: model.Response{StatusCode: 0, StatusMsg: "Login Success"},
+				UserId:   service.GetUseridByName(username),
+				Token:    token,
+			})
+		}
+	} else {
+		c.JSON(http.StatusOK, model.UserLoginResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
 	}
 }
