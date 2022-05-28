@@ -10,6 +10,7 @@ func ComparePassword(enterpassword string, username string) bool {
 		return false
 	}
 }
-func GetUseridByName(username string) int64 {
+
+func GetUserIdByName(username string) int64 {
 	return repository.GetUseridByName(username)
 }
