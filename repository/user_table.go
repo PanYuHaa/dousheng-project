@@ -19,7 +19,6 @@ func IsAccountExist(username string) bool {
 	} else {
 		return false
 	}
-
 }
 
 func GetUsersAmount() int64 {
@@ -54,4 +53,38 @@ func GetUserIdByName(username string) int64 {
 	var account model.Account
 	DB.Table("accounts").Where("username = ?", username).Find(&account)
 	return account.Id
+}
+
+func IsAccountExistById(userid int64) bool {
+	var user model.Account
+	DB.Table("accounts").Where("id = ?", userid).Find(&user)
+	if user.Id == userid {
+		return true
+	} else {
+		return false
+	}
+}
+
+func GetUserFollowCountByID(userid int64) int64 {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.FollowCount
+}
+
+func GetUserFollowerCountByID(userid int64) int64 {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.FollowerCount
+}
+
+func GetUserIsFollowByID(userid int64) bool {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.IsFollow
+}
+
+func GetUserNameByID(userid int64) string {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.NickName
 }

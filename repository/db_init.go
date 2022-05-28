@@ -4,10 +4,9 @@ import (
 	"dousheng-demo/config"
 	"dousheng-demo/model"
 	"fmt"
-	"sync"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"sync"
 )
 
 var DB *gorm.DB

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"sync/atomic"
 )
 
@@ -73,17 +74,22 @@ func Login(c *gin.Context) {
 	}
 }
 
-//func UserInfo(c *gin.Context) {
-//	token := c.Query("token")
-//
-//	if user, exist := usersLoginInfo[token]; exist {
-//		c.JSON(http.StatusOK, model.UserResponse{
-//			Response: model.Response{StatusCode: 0},
-//			User:     user,
-//		})
-//	} else {
-//		c.JSON(http.StatusOK, model.UserResponse{
-//			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-//		})
-//	}
-//}
+func UserInfo(c *gin.Context) {
+	var userid int64
+	userid, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
+	fmt.Println(userid)
+	if service.IsAccountExistById(userid) {
+		c.JSON(http.StatusOK, model.UserInfo{
+			Response:      model.Response{StatusCode: 0, StatusMsg: "Success"},
+			FollowCount:   service.GetUserFollowCountByID(userid),
+			FollowerCount: service.GetUserFollowerCountByID(userid),
+			ID:            userid,
+			IsFollow:      service.GetUserIsFollowByID(userid),
+			Name:          service.GetUserNameByID(userid),
+		})
+	} else {
+		c.JSON(http.StatusOK, model.UserLoginResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+		})
+	}
+}
