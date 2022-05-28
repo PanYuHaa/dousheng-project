@@ -12,5 +12,5 @@ func ComparePassword(enterpassword string, username string) bool {
 }
 
 func GetUserIdByName(username string) int64 {
-	return repository.GetUseridByName(username)
+	return repository.GetUserIdByName(username)
 }
