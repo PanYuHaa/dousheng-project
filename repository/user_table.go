@@ -43,12 +43,14 @@ func DeleteAccountById(id int64) error {
 	dbRes := DB.Delete(&model.Account{}, id)
 	return dbRes.Error
 }
+
 func GetPasswordByUsername(username string) string {
 	var account model.Account
 	DB.Table("accounts").Where("username = ?", username).Find(&account)
 	return account.PassWord
 }
-func GetUseridByName(username string) int64 {
+
+func GetUserIdByName(username string) int64 {
 	var account model.Account
 	DB.Table("accounts").Where("username = ?", username).Find(&account)
 	return account.Id
