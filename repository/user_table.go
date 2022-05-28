@@ -12,9 +12,9 @@ func GetUserById(userId int64) model.User {
 }
 
 func IsAccountExist(username string) bool {
-	var user model.User
+	var user model.Account
 	DB.Table("accounts").Where("username = ?", username).Find(&user)
-	if user.NickName == username {
+	if user.UserName == username {
 		return true
 	}
 	return false
