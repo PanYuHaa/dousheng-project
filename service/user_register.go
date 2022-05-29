@@ -9,10 +9,6 @@ func GetLastUserId() int64 {
 	return repository.GetUsersAmount()
 }
 
-func IsAccountExist(username string) bool {
-	return repository.IsAccountExist(username)
-}
-
 func AddAccount(account model.Account, user model.User) error {
 	err1 := repository.AddAccount(account)
 	if err1 != nil {

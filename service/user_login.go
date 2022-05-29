@@ -2,15 +2,10 @@ package service
 
 import "dousheng-demo/repository"
 
-func ComparePassword(enterpassword string, username string) bool {
-	turepassword := repository.GetPasswordByUsername(username)
-	if turepassword == enterpassword {
+func InfoVerify(enterpassword string, enterusername string, id int64) bool {
+	if enterusername == repository.GetUsernameById(id) && enterpassword == repository.GetPasswordById(id) {
 		return true
 	} else {
 		return false
 	}
-}
-
-func GetUserIdByName(username string) int64 {
-	return repository.GetUserIdByName(username)
 }

@@ -1,7 +1,10 @@
 package controller
 
-import "dousheng-demo/service"
+import (
+	"dousheng-demo/service"
+)
 
 func Init() {
 	userIdSequence = service.GetLastUserId()
+	usersLoginInfo = service.GetLoginInfo()
 }
