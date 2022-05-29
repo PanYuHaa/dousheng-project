@@ -12,8 +12,8 @@ func initRouter(r *gin.Engine) {
 	apiRouter := r.Group("/douyin")
 
 	// basic apis
-	apiRouter.GET("/feed/", controller.Feed) // PYH
-	apiRouter.GET("/user/", controller.UserInfo)
+	apiRouter.GET("/feed/", controller.Feed)               // PYH
+	apiRouter.GET("/user/", controller.UserInfo)           // CHY
 	apiRouter.POST("/user/register/", controller.Register) // PYH
 	apiRouter.POST("/user/login/", controller.Login)       // CMD
 	//apiRouter.POST("/publish/action/", controller.Publish)
