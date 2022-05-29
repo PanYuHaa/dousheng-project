@@ -16,7 +16,7 @@ func DeleteAccountById(id int64) error {
 	return dbRes.Error
 }
 
-//Check
+//	Check
 
 func IsTokenMatch(userid int64, token string) bool {
 	var user model.Account
@@ -29,6 +29,7 @@ func IsTokenMatch(userid int64, token string) bool {
 }
 
 func IsUserExistById(userid int64) bool {
+	// user和account通过id查找的话建议都用此函数
 	var user model.Account
 	DB.Table("accounts").Where("id = ?", userid).Find(&user)
 	if user.Id == userid {
