@@ -4,6 +4,15 @@ import (
 	"dousheng-demo/model"
 )
 
+//	Add
+
+func AddUser(user model.User) error {
+	dbRes := DB.Model(&model.User{}).Create(&user)
+	return dbRes.Error
+}
+
+//	Get
+
 func GetUserById(userId int64) model.User {
 	// 从db中获取user
 	var user model.User
@@ -11,80 +20,9 @@ func GetUserById(userId int64) model.User {
 	return user
 }
 
-func IsAccountExist(username string) bool {
-	var user model.Account
-	DB.Table("accounts").Where("username = ?", username).Find(&user)
-	if user.UserName == username {
-		return true
-	} else {
-		return false
-	}
-}
-
 func GetUsersAmount() int64 {
 	// 从db中获取user的数量(ID)
 	var count int64
 	DB.Model(&model.User{}).Where("nick_name != ?", "").Count(&count)
 	return count
-}
-
-func AddUser(user model.User) error {
-	dbRes := DB.Model(&model.User{}).Create(&user)
-	return dbRes.Error
-}
-
-func AddAccount(account model.Account) error {
-	dbRes := DB.Model(&model.Account{}).Create(&account)
-	return dbRes.Error
-}
-
-func DeleteAccountById(id int64) error {
-	dbRes := DB.Delete(&model.Account{}, id)
-	return dbRes.Error
-}
-
-func GetPasswordByUsername(username string) string {
-	var account model.Account
-	DB.Table("accounts").Where("username = ?", username).Find(&account)
-	return account.PassWord
-}
-
-func GetUserIdByName(username string) int64 {
-	var account model.Account
-	DB.Table("accounts").Where("username = ?", username).Find(&account)
-	return account.Id
-}
-
-func IsAccountExistById(userid int64) bool {
-	var user model.Account
-	DB.Table("accounts").Where("id = ?", userid).Find(&user)
-	if user.Id == userid {
-		return true
-	} else {
-		return false
-	}
-}
-
-func GetUserFollowCountByID(userid int64) int64 {
-	var user model.User
-	DB.Table("users").Find(&user, userid)
-	return user.FollowCount
-}
-
-func GetUserFollowerCountByID(userid int64) int64 {
-	var user model.User
-	DB.Table("users").Find(&user, userid)
-	return user.FollowerCount
-}
-
-func GetUserIsFollowByID(userid int64) bool {
-	var user model.User
-	DB.Table("users").Find(&user, userid)
-	return user.IsFollow
-}
-
-func GetUserNameByID(userid int64) string {
-	var user model.User
-	DB.Table("users").Find(&user, userid)
-	return user.NickName
 }

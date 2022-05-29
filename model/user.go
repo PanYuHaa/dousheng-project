@@ -12,4 +12,5 @@ type Account struct {
 	Id       int64  `json:"id,omitempty"`
 	UserName string `gorm:"column:username" json:"username,omitempty"`
 	PassWord string `gorm:"column:password" json:"password,omitempty"`
+	Token    string `json:"token,omitempty"`
 }
