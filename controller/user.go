@@ -5,6 +5,7 @@ import (
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"sync/atomic"
 )
 
@@ -67,6 +68,32 @@ func Login(c *gin.Context) {
 		} else {
 			c.JSON(http.StatusOK, model.UserLoginResponse{
 				Response: model.Response{StatusCode: 1, StatusMsg: "Incorrect username or password"},
+			})
+		}
+	} else {
+		c.JSON(http.StatusOK, model.UserLoginResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+		})
+	}
+}
+
+func UserInfo(c *gin.Context) {
+	var userid int64
+	userid, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
+	token := c.Query("token")
+	if service.IsUserExistById(userid) {
+		if service.IsTokenMatch(userid, token) {
+			c.JSON(http.StatusOK, model.UserInfo{
+				Response:      model.Response{StatusCode: 0, StatusMsg: "Success"},
+				FollowCount:   service.GetUserFollowCountByID(userid),
+				FollowerCount: service.GetUserFollowerCountByID(userid),
+				ID:            userid,
+				IsFollow:      service.GetUserIsFollowByID(userid),
+				Name:          service.GetUserNameByID(userid),
+			})
+		} else {
+			c.JSON(http.StatusOK, model.UserLoginResponse{
+				Response: model.Response{StatusCode: 1, StatusMsg: "Token Error"},
 			})
 		}
 	} else {

@@ -4,8 +4,12 @@ import (
 	"dousheng-demo/repository"
 )
 
-func IsAccountExistById(userid int64) bool {
-	return repository.IsAccountExistById(userid)
+func IsTokenMatch(userid int64, token string) bool {
+	return repository.IsTokenMatch(userid, token)
+}
+
+func IsUserExistById(id int64) bool {
+	return repository.IsUserExistById(id)
 }
 
 func GetUserFollowCountByID(userid int64) int64 {

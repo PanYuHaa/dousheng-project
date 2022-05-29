@@ -16,6 +16,28 @@ func DeleteAccountById(id int64) error {
 	return dbRes.Error
 }
 
+//Check
+
+func IsTokenMatch(userid int64, token string) bool {
+	var user model.Account
+	DB.Table("accounts").Where("id = ?", userid).Find(&user)
+	if user.Token == token {
+		return true
+	} else {
+		return false
+	}
+}
+
+func IsUserExistById(userid int64) bool {
+	var user model.Account
+	DB.Table("accounts").Where("id = ?", userid).Find(&user)
+	if user.Id == userid {
+		return true
+	} else {
+		return false
+	}
+}
+
 //	Get
 
 func GetPasswordById(id int64) string {
@@ -34,4 +56,28 @@ func GetTokenById(id int64) string {
 	var account model.Account
 	DB.Table("accounts").Where("id = ?", id).Find(&account)
 	return account.Token
+}
+
+func GetUserFollowCountByID(userid int64) int64 {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.FollowCount
+}
+
+func GetUserFollowerCountByID(userid int64) int64 {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.FollowerCount
+}
+
+func GetUserIsFollowByID(userid int64) bool {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.IsFollow
+}
+
+func GetUserNameByID(userid int64) string {
+	var user model.User
+	DB.Table("users").Find(&user, userid)
+	return user.NickName
 }
