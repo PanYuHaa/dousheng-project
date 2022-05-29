@@ -81,8 +81,8 @@ func UserInfo(c *gin.Context) {
 	var userid int64
 	userid, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
 	token := c.Query("token")
-	if service.IsUserExistById(userid) {
-		if service.IsTokenMatch(userid, token) {
+	if service.IsTokenMatch(userid, token) {
+		if service.IsUserExistById(userid) {
 			c.JSON(http.StatusOK, model.UserInfo{
 				Response:      model.Response{StatusCode: 0, StatusMsg: "Success"},
 				FollowCount:   service.GetUserFollowCountByID(userid),
@@ -93,12 +93,13 @@ func UserInfo(c *gin.Context) {
 			})
 		} else {
 			c.JSON(http.StatusOK, model.UserLoginResponse{
-				Response: model.Response{StatusCode: 1, StatusMsg: "Token Error"},
+				Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 			})
 		}
 	} else {
 		c.JSON(http.StatusOK, model.UserLoginResponse{
-			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+			Response: model.Response{StatusCode: 1, StatusMsg: "Token Error"},
 		})
 	}
+
 }
