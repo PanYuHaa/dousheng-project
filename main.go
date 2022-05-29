@@ -1,7 +1,6 @@
 package main
 
 import (
-	"dousheng-demo/controller"
 	"dousheng-demo/repository"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
@@ -10,7 +9,6 @@ import (
 func init() {
 	repository.Init()
 	service.Init()
-	controller.Init()
 }
 
 func main() {

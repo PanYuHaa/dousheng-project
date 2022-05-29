@@ -6,6 +6,6 @@ import (
 )
 
 func GetPublishList(userId int64) []model.Video {
-	nickname := repository.GetUserById(userId).NickName
-	return repository.GetVideosByName(nickname)
+	name := repository.GetUserById(userId).Name
+	return repository.GetVideosByName(name)
 }

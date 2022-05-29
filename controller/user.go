@@ -5,14 +5,25 @@ import (
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 	"sync/atomic"
 )
 
-// 每次启动服务器的时候都要对其进行初始化，用token来找userId，从而保证数据的安全性（暂时将token永久保存在sql中）
-var usersLoginInfo = map[string]int64{}
+// usersLoginInfo use map to store user info, and key is username+password for demo
+// user data will be cleared every time the server starts
+var usersLoginInfo = map[string]model.User{}
 
-var userIdSequence int64
+// test data: username=ceshi, password=douyin
+//var usersLoginInfo = map[string]model.User{
+//	"ceshidouyin": {
+//		Id:            1,
+//		Name:          "ceshi",
+//		FollowCount:   10,
+//		FollowerCount: 5,
+//		IsFollow:      true,
+//	},
+//}
+
+var userIdSequence = int64(1)
 
 func Register(c *gin.Context) {
 	username := c.Query("username")
@@ -27,23 +38,10 @@ func Register(c *gin.Context) {
 	} else {
 		atomic.AddInt64(&userIdSequence, 1)
 		newUser := model.User{
-			Id:       userIdSequence,
-			NickName: username,
+			Id:   userIdSequence,
+			Name: username,
 		}
-		newAccount := model.Account{
-			Id:       userIdSequence,
-			UserName: username,
-			PassWord: password,
-			Token:    token,
-		}
-		usersLoginInfo[token] = newUser.Id             // 更新map
-		err := service.AddAccount(newAccount, newUser) // 注册账号，更新sql数据
-		if err != nil {
-			c.JSON(http.StatusOK, model.UserLoginResponse{
-				Response: model.Response{StatusCode: -1, StatusMsg: "Register Account failed"},
-			})
-			return
-		}
+		usersLoginInfo[token] = newUser
 		c.JSON(http.StatusOK, model.UserLoginResponse{
 			Response: model.Response{StatusCode: 0, StatusMsg: "Success"},
 			UserId:   userIdSequence,
@@ -56,20 +54,14 @@ func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password
+	token := username + password // 使用加密方法生成token
 
-	if id, exist := usersLoginInfo[token]; exist {
-		if service.InfoVerify(password, username, id) {
-			c.JSON(http.StatusOK, model.UserLoginResponse{
-				Response: model.Response{StatusCode: 0, StatusMsg: "Login success"},
-				UserId:   id,
-				Token:    token,
-			})
-		} else {
-			c.JSON(http.StatusOK, model.UserLoginResponse{
-				Response: model.Response{StatusCode: 1, StatusMsg: "Incorrect username or password"},
-			})
-		}
+	if user, exist := usersLoginInfo[token]; exist {
+		c.JSON(http.StatusOK, model.UserLoginResponse{
+			Response: model.Response{StatusCode: 0, StatusMsg: "Success"},
+			UserId:   user.Id,
+			Token:    token,
+		})
 	} else {
 		c.JSON(http.StatusOK, model.UserLoginResponse{
 			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
@@ -78,28 +70,23 @@ func Login(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	var userid int64
-	userid, _ = strconv.ParseInt(c.Query("user_id"), 10, 64)
 	token := c.Query("token")
-	if service.IsTokenMatch(userid, token) {
-		if service.IsUserExistById(userid) {
-			c.JSON(http.StatusOK, model.UserInfo{
-				Response:      model.Response{StatusCode: 0, StatusMsg: "Success"},
-				FollowCount:   service.GetUserFollowCountByID(userid),
-				FollowerCount: service.GetUserFollowerCountByID(userid),
-				ID:            userid,
-				IsFollow:      service.GetUserIsFollowByID(userid),
-				Name:          service.GetUserNameByID(userid),
+
+	if user, exist := usersLoginInfo[token]; exist {
+		err := service.AddUser(user) // 拉取当前登录用户的全部信息，并存储到本地
+		if err != nil {
+			c.JSON(http.StatusOK, model.UserResponse{
+				Response: model.Response{StatusCode: 1, StatusMsg: "Failed to save"},
 			})
-		} else {
-			c.JSON(http.StatusOK, model.UserLoginResponse{
-				Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
-			})
+			return
 		}
+		c.JSON(http.StatusOK, model.UserResponse{
+			Response: model.Response{StatusCode: 0, StatusMsg: "Success"},
+			User:     user,
+		})
 	} else {
-		c.JSON(http.StatusOK, model.UserLoginResponse{
-			Response: model.Response{StatusCode: 1, StatusMsg: "Token Error"},
+		c.JSON(http.StatusOK, model.UserResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
 	}
-
 }
