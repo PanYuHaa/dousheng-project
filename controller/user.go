@@ -57,22 +57,6 @@ func Login(c *gin.Context) {
 
 	token := username + password
 
-	//t := service.IsAccountExist(username)
-	//if t {
-	//	result := service.ComparePassword(password, username)
-	//	if !result {
-	//		c.JSON(http.StatusOK, model.UserLoginResponse{
-	//			Response: model.Response{StatusCode: 1, StatusMsg: "Password Wrong"},
-	//		})
-	//	} else {
-	//		token := username + password
-	//		c.JSON(http.StatusOK, model.UserLoginResponse{
-	//			Response: model.Response{StatusCode: 0, StatusMsg: "Login Success"},
-	//			UserId:   service.GetUserIdByName(username),
-	//			Token:    token,
-	//		})
-	//
-	//	}
 	if id, exist := usersLoginInfo[token]; exist {
 		if service.InfoVerify(password, username, id) {
 			c.JSON(http.StatusOK, model.UserLoginResponse{
