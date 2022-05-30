@@ -21,6 +21,7 @@ func Init() {
 
 	err = InitUser()
 	err = InitVideo()
+	err = InitFavorite()
 	if err != nil {
 		panic(err)
 	} else {
@@ -54,5 +55,14 @@ func InitVideo() error {
 		return nil
 	}
 	err = m.CreateTable(&model.Video{})
+	return err
+}
+func InitFavorite() error {
+	var err error
+	m := DB.Migrator()
+	if m.HasTable(&model.Favorite{}) {
+		return nil
+	}
+	err = m.CreateTable(&model.Favorite{})
 	return err
 }
