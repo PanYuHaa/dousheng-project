@@ -1,6 +1,9 @@
 package repository
 
-import "dousheng-demo/model"
+import (
+	"dousheng-demo/model"
+	"gorm.io/gorm"
+)
 
 func AddNewFavorite(favorite model.Favorite) error {
 	dbRes := DB.Model(&model.Favorite{}).Create(&favorite)
@@ -11,6 +14,11 @@ func DeleteFavorite(favorite model.Favorite) error {
 	return dbRes.Error
 }
 
-//func GetFavoriteVideo()model.Video{
-//
-//}
+func GetFavoriteVideos(UserId string) []string {
+	var Ids []string
+	DB.Where("user_id = ?", UserId).FindInBatches(&Ids, 100, func(tx *gorm.DB, batch int) error {
+		// 如果返回错误会终止后续批量操作
+		return nil
+	})
+	return Ids
+}
