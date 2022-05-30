@@ -1,7 +1,6 @@
 package service
 
 import (
-	"dousheng-demo/controller"
 	"dousheng-demo/model"
 	"dousheng-demo/repository"
 )
@@ -29,12 +28,11 @@ func GetVideoList() []model.Video {
 	}
 }
 
-func GetVideoRsp() controller.Response {
+func GetVideoRsp() bool {
 	if startId == 0 {
-		return controller.Response{StatusCode: -1, StatusMsg: "No video"}
-	} else {
-		return controller.Response{StatusCode: 0, StatusMsg: "Success"}
+		return false
 	}
+	return true
 }
 
 func GetCreateTime() int64 {
