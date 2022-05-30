@@ -10,3 +10,7 @@ func DeleteFavorite(favorite model.Favorite) error {
 	dbRes := DB.Where("video_id = ? ", favorite.VideoId).Where("user_id=?", favorite.UserId).Delete(&model.Favorite{})
 	return dbRes.Error
 }
+
+//func GetFavoriteVideo()model.Video{
+//
+//}
