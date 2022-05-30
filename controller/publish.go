@@ -8,7 +8,7 @@ import (
 )
 
 type VideoListResponse struct {
-	model.Response
+	Response
 	VideoList []model.Video `json:"video_list"`
 }
 
@@ -24,7 +24,7 @@ func PublishList(c *gin.Context) {
 	userId := usersLoginInfo[token].Id
 
 	c.JSON(http.StatusOK, VideoListResponse{
-		Response: model.Response{
+		Response: Response{
 			StatusCode: 0,
 		},
 		VideoList: service.GetPublishList(userId),
