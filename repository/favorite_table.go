@@ -2,7 +2,6 @@ package repository
 
 import (
 	"dousheng-demo/model"
-	"gorm.io/gorm"
 )
 
 func AddNewFavorite(favorite model.Favorite) error {
@@ -16,9 +15,6 @@ func DeleteFavorite(favorite model.Favorite) error {
 
 func GetFavoriteVideos(UserId string) []string {
 	var Ids []string
-	DB.Where("user_id = ?", UserId).FindInBatches(&Ids, 100, func(tx *gorm.DB, batch int) error {
-		// 如果返回错误会终止后续批量操作
-		return nil
-	})
+	DB.Raw("select video_id from favorites where user_id=?", UserId).Scan(&Ids)
 	return Ids
 }

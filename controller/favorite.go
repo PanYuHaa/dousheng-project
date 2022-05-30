@@ -48,8 +48,8 @@ func FavoriteList(c *gin.Context) {
 	UserId := c.Query("user_id")
 	if _, exist := usersLoginInfo[token]; exist {
 		c.JSON(http.StatusOK, FeedResponse{
-			Response:  service.FavoriteListRsp(UserId),
 			VideoList: service.FavoriteList(UserId),
+			Response:  service.FavoriteListRsp(UserId),
 		})
 	} else {
 		c.JSON(http.StatusOK, model.UserLoginResponse{
