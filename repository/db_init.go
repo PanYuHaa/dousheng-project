@@ -15,13 +15,13 @@ var once sync.Once
 func Init() {
 	var err error
 	once.Do(func() {
-
 		DB = ConnectDB()
 	})
 
 	err = InitUser()
 	err = InitVideo()
 	err = InitFavorite()
+	err = InitFollow()
 	if err != nil {
 		panic(err)
 	} else {
@@ -57,6 +57,7 @@ func InitVideo() error {
 	err = m.CreateTable(&model.Video{})
 	return err
 }
+
 func InitFavorite() error {
 	var err error
 	m := DB.Migrator()
@@ -64,5 +65,15 @@ func InitFavorite() error {
 		return nil
 	}
 	err = m.CreateTable(&model.Favorite{})
+	return err
+}
+
+func InitFollow() error {
+	var err error
+	m := DB.Migrator()
+	if m.HasTable(&model.Follow{}) {
+		return nil
+	}
+	err = m.CreateTable(&model.Follow{})
 	return err
 }
