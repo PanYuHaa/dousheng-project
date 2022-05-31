@@ -53,6 +53,13 @@ func Register(c *gin.Context) {
 			Name: username,
 		}
 		usersLoginInfo[token] = newUser
+		err := service.AddUser(newUser) // 拉取当前登录用户的全部信息，并存储到本地
+		if err != nil {
+			c.JSON(http.StatusOK, UserResponse{
+				Response: Response{StatusCode: 1, StatusMsg: "Failed to save"},
+			})
+			return
+		}
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
 			UserId:   userIdSequence,
@@ -84,13 +91,6 @@ func UserInfo(c *gin.Context) {
 	token := c.Query("token")
 
 	if user, exist := usersLoginInfo[token]; exist {
-		err := service.AddUser(user) // 拉取当前登录用户的全部信息，并存储到本地
-		if err != nil {
-			c.JSON(http.StatusOK, UserResponse{
-				Response: Response{StatusCode: 1, StatusMsg: "Failed to save"},
-			})
-			return
-		}
 		c.JSON(http.StatusOK, UserResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
 			User:     user,
