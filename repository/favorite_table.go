@@ -1,6 +1,8 @@
 package repository
 
-import "dousheng-demo/model"
+import (
+	"dousheng-demo/model"
+)
 
 func AddNewFavorite(favorite model.Favorite) error {
 	dbRes := DB.Model(&model.Favorite{}).Create(&favorite)
@@ -11,6 +13,8 @@ func DeleteFavorite(favorite model.Favorite) error {
 	return dbRes.Error
 }
 
-//func GetFavoriteVideo()model.Video{
-//
-//}
+func GetFavoriteVideos(UserId string) []string {
+	var Ids []string
+	DB.Raw("select video_id from favorites where user_id=?", UserId).Scan(&Ids)
+	return Ids
+}

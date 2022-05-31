@@ -20,8 +20,8 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/publish/list/", controller.PublishList) // PYH
 
 	// extra apis - I
-	apiRouter.POST("/favorite/action/", controller.FavoriteAction)
-	//apiRouter.GET("/favorite/list/", controller.FavoriteList)
+	apiRouter.POST("/favorite/action/", controller.FavoriteAction) //CMD
+	apiRouter.GET("/favorite/list/", controller.FavoriteList)      //CMD
 	//apiRouter.POST("/comment/action/", controller.CommentAction)
 	//apiRouter.GET("/comment/list/", controller.CommentList)
 

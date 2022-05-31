@@ -42,17 +42,17 @@ func FavoriteAction(c *gin.Context) {
 	}
 }
 
-//func FavoriteList(c *gin.Context){
-//	token := c.Query("token")
-//	UserId := c.Query("user_id")
-//	if _, exist := usersLoginInfo[token]; exist{
-//		c.JSON(http.StatusOK, FeedResponse{
-//			Response:  service.FavoriteListRsp(UserId),
-//			VideoList: service.FavoriteList(UserId),
-//		})
-//	} else{
-//		c.JSON(http.StatusOK, model.UserLoginResponse{
-//			Response: model.Response{StatusCode: 1, StatusMsg: "User don't login"},
-//		})
-//	}
-//}
+func FavoriteList(c *gin.Context) {
+	token := c.Query("token")
+	UserId := c.Query("user_id")
+	if _, exist := usersLoginInfo[token]; exist {
+		c.JSON(http.StatusOK, FeedResponse{
+			VideoList: service.FavoriteList(UserId),
+			Response:  service.FavoriteListRsp(UserId),
+		})
+	} else {
+		c.JSON(http.StatusOK, model.UserLoginResponse{
+			Response: model.Response{StatusCode: 1, StatusMsg: "User don't login"},
+		})
+	}
+}
