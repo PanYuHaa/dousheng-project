@@ -23,11 +23,10 @@ func FavoriteList(UserId string) []model.Video {
 
 	return VideoList
 }
-
-func FavoriteListRsp(UserId string) bool {
+func FavoriteListRsp(UserId string) model.Response {
 	if u != 0 {
-		return true
+		return model.Response{StatusCode: 1, StatusMsg: "Favorite Video"}
 	} else {
-		return false
+		return model.Response{StatusCode: -1, StatusMsg: "No Favorite Videos"}
 	}
 }
