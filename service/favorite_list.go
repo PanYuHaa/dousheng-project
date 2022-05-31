@@ -1,6 +1,7 @@
 package service
 
 import (
+	"dousheng-demo/controller"
 	"dousheng-demo/model"
 	"dousheng-demo/repository"
 	"fmt"
@@ -23,10 +24,10 @@ func FavoriteList(UserId string) []model.Video {
 
 	return VideoList
 }
-func FavoriteListRsp(UserId string) model.Response {
+func FavoriteListRsp(UserId string) controller.Response {
 	if u != 0 {
-		return model.Response{StatusCode: 1, StatusMsg: "Favorite Video"}
+		return controller.Response{StatusCode: 1, StatusMsg: "Favorite Video"}
 	} else {
-		return model.Response{StatusCode: -1, StatusMsg: "No Favorite Videos"}
+		return controller.Response{StatusCode: -1, StatusMsg: "No Favorite Videos"}
 	}
 }
