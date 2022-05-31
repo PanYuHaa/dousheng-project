@@ -11,7 +11,10 @@ import (
 func PublishVideo(name string, finalName string, title string) error {
 	// playUrl := "http://[$主机ip]:8080/static/video/" + finalName
 	playUrl := "http://192.168.10.103:8080/static/video/" + finalName
-	getSnapshot(finalName)
+	err := getSnapshot(finalName)
+	if err != nil {
+		return err
+	}
 	// coverUrl := "http://[$主机ip]:8080/static/video/" + finalName
 	coverUrl := "http://192.168.10.103:8080/static/cover/" + getPicName(finalName)
 	return repository.AddVideo(model.Video{
@@ -24,16 +27,16 @@ func PublishVideo(name string, finalName string, title string) error {
 	})
 }
 
-func getSnapshot(finalName string) {
+func getSnapshot(finalName string) error {
 	outPicName := getPicName(finalName)
 	inputPath := "./public/video/" + finalName
 	outputPath := "./public/cover/" + outPicName
 	// 调用ffmpeg应用程序进行视频截图
-	cmd := exec.Command("./ffmpeg", "-i", inputPath, "-ss", "1", "-f", "image2", outputPath)
+	cmd := exec.Command("./ffmpeg", "-i", inputPath, "-ss", "1", "-f", "image2", "-frames:v", "1", outputPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	// 由于有些ffmpeg的bug没有解决所以暂时不反回error
-	cmd.Run()
+	return cmd.Run()
 }
 
 func getPicName(finalName string) string {
