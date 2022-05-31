@@ -16,6 +16,7 @@ type VideoListResponse struct {
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
+	title := c.PostForm("title")
 	token := c.PostForm("token")
 
 	if _, exist := usersLoginInfo[token]; !exist {
@@ -36,14 +37,22 @@ func Publish(c *gin.Context) {
 	user := usersLoginInfo[token]                          // token验证
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)   // 格式化字符串拼接
 	saveFile := filepath.Join("./public/video", finalName) // filepath.Join()连接路径，saveFile文件保存的目标地址。
-	if err := c.SaveUploadedFile(data, saveFile); err != nil {
+	// 存储视频在服务端
+	if err = c.SaveUploadedFile(data, saveFile); err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
 		return
 	}
-
+	// 更新video数据表
+	if err = service.PublishVideo(user.Name, finalName, title); err != nil {
+		c.JSON(http.StatusOK, Response{
+			StatusCode: 1,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
 		StatusMsg:  finalName + " uploaded successfully",

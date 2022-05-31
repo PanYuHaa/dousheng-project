@@ -4,6 +4,13 @@ import (
 	"dousheng-demo/model"
 )
 
+//	Add
+
+func AddVideo(video model.Video) error {
+	dbRes := DB.Model(&model.Video{}).Create(&video)
+	return dbRes.Error
+}
+
 //	Get
 
 func GetVideoById(videoId int64) model.Video {
@@ -25,5 +32,12 @@ func TimeLimitAmount(timeLimit int64) int64 {
 	// 从db中获取截止时间内的数量
 	var count int64
 	DB.Model(&model.Video{}).Where("create_time < ?", timeLimit).Count(&count)
+	return count
+}
+
+func VideoAmount() int64 {
+	// 从db中获取截止时间内的数量
+	var count int64
+	DB.Model(&model.Video{}).Where("name != ?", "").Count(&count)
 	return count
 }
