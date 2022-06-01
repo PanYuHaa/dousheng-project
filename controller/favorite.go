@@ -15,25 +15,37 @@ func FavoriteAction(c *gin.Context) {
 	if t, exist := usersLoginInfo[token]; exist {
 		UserId := strconv.FormatInt(t.Id, 10)
 		if ActionType == "1" {
-			err := service.Favorite(UserId, VideoId)
-			if err != nil {
+			if !service.SearchFavorite(UserId, VideoId) {
+				err := service.Favorite(UserId, VideoId)
+				if err != nil {
+					c.JSON(http.StatusOK, UserLoginResponse{
+						Response: Response{StatusCode: 1, StatusMsg: "Favorite failed"},
+					})
+				}
+				c.JSON(http.StatusOK, UserLoginResponse{
+					Response: Response{StatusCode: 0, StatusMsg: "Favorite success"},
+				})
+			} else {
 				c.JSON(http.StatusOK, UserLoginResponse{
 					Response: Response{StatusCode: 1, StatusMsg: "Favorite failed"},
 				})
 			}
-			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: Response{StatusCode: 0, StatusMsg: "Favorite success"},
-			})
 		} else if ActionType == "2" {
-			err := service.Disfavorite(UserId, VideoId)
-			if err != nil {
+			if service.SearchFavorite(UserId, VideoId) {
+				err := service.Disfavorite(UserId, VideoId)
+				if err != nil {
+					c.JSON(http.StatusOK, UserLoginResponse{
+						Response: Response{StatusCode: 1, StatusMsg: "Disfavorite failed"},
+					})
+				}
+				c.JSON(http.StatusOK, UserLoginResponse{
+					Response: Response{StatusCode: 0, StatusMsg: "Disfavorite success"},
+				})
+			} else {
 				c.JSON(http.StatusOK, UserLoginResponse{
 					Response: Response{StatusCode: 1, StatusMsg: "Disfavorite failed"},
 				})
 			}
-			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: Response{StatusCode: 0, StatusMsg: "Disfavorite success"},
-			})
 		}
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{

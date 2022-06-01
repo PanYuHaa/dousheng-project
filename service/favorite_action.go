@@ -8,10 +8,26 @@ import (
 func Favorite(userid string, videoid string) error {
 	newfavorite := model.Favorite{UserId: userid,
 		VideoId: videoid}
-	return repository.AddNewFavorite(newfavorite)
+	t := repository.AddVideoFavorite(videoid)
+	if t == nil {
+		return repository.AddNewFavorite(newfavorite)
+	} else {
+		return t
+	}
+
 }
 func Disfavorite(userid string, videoid string) error {
 	newfavorite := model.Favorite{UserId: userid,
 		VideoId: videoid}
-	return repository.DeleteFavorite(newfavorite)
+	t := repository.DeleteVideoFavorite(videoid)
+	if t == nil {
+		return repository.DeleteFavorite(newfavorite)
+	} else {
+		return t
+	}
+}
+func SearchFavorite(userid string, videoid string) bool {
+	newfavorite := model.Favorite{UserId: userid,
+		VideoId: videoid}
+	return repository.SearchFavorite(newfavorite)
 }

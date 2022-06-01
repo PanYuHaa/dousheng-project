@@ -10,6 +10,24 @@ func AddVideo(video model.Video) error {
 	dbRes := DB.Model(&model.Video{}).Create(&video)
 	return dbRes.Error
 }
+func AddVideoFavorite(VideoId string) error {
+	mu.Lock()
+	defer mu.Unlock()
+	var video model.Video
+	dbRes := DB.First(&video, VideoId)
+	video.FavoriteCount++
+	DB.Save(&video)
+	return dbRes.Error
+}
+func DeleteVideoFavorite(VideoId string) error {
+	mu.Lock()
+	defer mu.Unlock()
+	var video model.Video
+	dbRes := DB.First(&video, VideoId)
+	video.FavoriteCount--
+	DB.Save(&video)
+	return dbRes.Error
+}
 
 //	Get
 

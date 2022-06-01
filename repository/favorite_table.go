@@ -18,3 +18,14 @@ func GetFavoriteVideos(UserId string) []string {
 	DB.Raw("select video_id from favorites where user_id=?", UserId).Scan(&Ids)
 	return Ids
 }
+
+func SearchFavorite(favorite model.Favorite) bool {
+	var t model.Favorite
+	t.UserId = "-1"
+	DB.Where("video_id = ? ", favorite.VideoId).Where("user_id=?", favorite.UserId).Find(&t)
+	if t.UserId == "-1" {
+		return false
+	} else {
+		return true
+	}
+}

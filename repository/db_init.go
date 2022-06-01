@@ -11,6 +11,7 @@ import (
 
 var DB *gorm.DB
 var once sync.Once
+var mu sync.Mutex
 
 func Init() {
 	var err error
