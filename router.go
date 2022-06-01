@@ -10,6 +10,7 @@ func initRouter(r *gin.Engine) {
 	r.Static("/static", "./public")
 
 	apiRouter := r.Group("/douyin")
+
 	// basic apis
 	apiRouter.GET("/feed/", controller.Feed)                // PYH
 	apiRouter.GET("/user/", controller.UserInfo)            // CHY
@@ -21,11 +22,11 @@ func initRouter(r *gin.Engine) {
 	// extra apis - I
 	apiRouter.POST("/favorite/action/", controller.FavoriteAction) //CMD
 	apiRouter.GET("/favorite/list/", controller.FavoriteList)      //CMD
-	//apiRouter.POST("/comment/action/", controller.CommentAction)
+	apiRouter.POST("/comment/action/", controller.CommentAction)   //PYH
 	//apiRouter.GET("/comment/list/", controller.CommentList)
 
 	// extra apis - II
-	//apiRouter.POST("/relation/action/", controller.RelationAction)
+	apiRouter.POST("/relation/action/", controller.RelationAction) //CHY
 	//apiRouter.GET("/relation/follow/list/", controller.FollowList)
 	//apiRouter.GET("/relation/follower/list/", controller.FollowerList)
 }

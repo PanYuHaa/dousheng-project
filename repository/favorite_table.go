@@ -9,7 +9,7 @@ func AddNewFavorite(favorite model.Favorite) error {
 	return dbRes.Error
 }
 func DeleteFavorite(favorite model.Favorite) error {
-	dbRes := DB.Where("video_id = ? ", favorite.VideoId).Where("user_id=?", favorite.UserId).Delete(&model.Favorite{})
+	dbRes := DB.Where("video_id = ? ", favorite.VideoId).Where("user_id = ?", favorite.UserId).Delete(&model.Favorite{})
 	return dbRes.Error
 }
 
