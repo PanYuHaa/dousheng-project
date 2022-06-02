@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+type CommentListResponse struct {
+	Response
+	CommentList []model.Comment `json:"comment_list,omitempty"`
+}
+
 type CommentActionResponse struct {
 	Response
 	Comment model.Comment `json:"comment,omitempty"`
@@ -44,7 +49,6 @@ func CommentAction(c *gin.Context) {
 		if actionType == "2" {
 			commentId, _ := strconv.ParseInt(c.Query("comment_id"), 10, 64)
 			videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
-			atomic.AddInt64(&commentIdSequence, -1)
 			service.DeleteComment(commentId, videoId)
 			c.JSON(http.StatusOK, CommentActionResponse{
 				Response: Response{StatusCode: 0, StatusMsg: "Delete comment success"},
@@ -52,6 +56,20 @@ func CommentAction(c *gin.Context) {
 			return
 		}
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "Failed to comment action"})
+	} else {
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+	}
+}
+
+// CommentList all videos have same demo comment list
+func CommentList(c *gin.Context) {
+	token := c.Query("token")
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
+	if _, exist := usersLoginInfo[token]; exist {
+		c.JSON(http.StatusOK, CommentListResponse{
+			Response:    Response{StatusCode: 0},
+			CommentList: service.GetCommentList(videoId),
+		})
 	} else {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}

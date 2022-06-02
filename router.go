@@ -23,7 +23,7 @@ func initRouter(r *gin.Engine) {
 	apiRouter.POST("/favorite/action/", controller.FavoriteAction) //CMD
 	apiRouter.GET("/favorite/list/", controller.FavoriteList)      //CMD
 	apiRouter.POST("/comment/action/", controller.CommentAction)   //PYH
-	//apiRouter.GET("/comment/list/", controller.CommentList)
+	apiRouter.GET("/comment/list/", controller.CommentList)        //PYH
 
 	// extra apis - II
 	apiRouter.POST("/relation/action/", controller.RelationAction) //CHY

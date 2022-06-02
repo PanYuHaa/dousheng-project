@@ -9,3 +9,8 @@ type Follow struct {
 	UserId   string
 	ToUserId string
 }
+
+type VideoComment struct {
+	VideoId   int64
+	CommentId int64
+}
