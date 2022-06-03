@@ -20,9 +20,9 @@ func GetVideoList() []model.Video {
 			startId = repository.TimeLimitAmount(9999999999)
 			return videoList
 		}
-		// 如果list满30个，返回videoList
-		if count == 30 {
-			startId = repository.TimeLimitAmount(videoList[29].CreateTime)
+		// 如果list满20个，返回videoList
+		if count == 20 {
+			startId = repository.TimeLimitAmount(videoList[19].CreateTime)
 			return videoList
 		}
 	}
