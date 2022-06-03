@@ -54,8 +54,8 @@ func Register(c *gin.Context) {
 			PassWord: password,
 		}
 		newUser := model.User{
-			Id:   userIdSequence,
-			Name: username,
+			UserId: userIdSequence,
+			Name:   username,
 		}
 		usersLoginInfo[username] = newUser          // 将生成的用户装进map，username作为key
 		err := service.AddUser(newUser, newAccount) // 拉取当前账户及其用户的信息，并存储到数据库
@@ -96,14 +96,14 @@ func Login(c *gin.Context) {
 	if user, exist := usersLoginInfo[username]; exist {
 		// 签发token，目前没有加入过期校验
 		newClaim := middleware.UserClaims{
-			Id:   user.Id,
+			Id:   user.UserId,
 			Name: username,
 		}
 		token := middleware.GenerateToken(newClaim)
 
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
-			UserId:   user.Id,
+			UserId:   user.UserId,
 			Token:    token,
 		})
 	} else {

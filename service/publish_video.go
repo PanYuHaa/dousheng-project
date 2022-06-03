@@ -20,8 +20,8 @@ func PublishVideo(user model.User, finalName string, title string) error {
 	return repository.AddVideo(model.Video{
 		Id: repository.VideoAmount() + 1,
 		Author: model.User{
-			Id:   user.Id,
-			Name: user.Name,
+			UserId: user.UserId,
+			Name:   user.Name,
 		},
 		PlayUrl:    playUrl,
 		CoverUrl:   coverUrl,

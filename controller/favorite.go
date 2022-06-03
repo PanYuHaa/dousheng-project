@@ -16,7 +16,7 @@ func FavoriteAction(c *gin.Context) {
 	claim := userClaim.(*middleware.UserClaims)
 	ActionType := c.Query("action_type")
 	if t, exist := usersLoginInfo[claim.Name]; exist {
-		UserId := strconv.FormatInt(t.Id, 10)
+		UserId := strconv.FormatInt(t.UserId, 10)
 		if ActionType == "1" {
 			if !service.SearchFavorite(UserId, VideoId) {
 				err := service.Favorite(UserId, VideoId)

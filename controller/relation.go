@@ -12,7 +12,7 @@ func RelationAction(c *gin.Context) {
 	toid := c.Query("to_user_id")
 	ActionType := c.Query("action_type")
 	if t, exist := usersLoginInfo[token]; exist {
-		t := strconv.FormatInt(t.Id, 10)
+		t := strconv.FormatInt(t.UserId, 10)
 		if ActionType == "1" {
 			if !service.SearchFollow(t, toid) {
 				err := service.Follow(t, toid)
