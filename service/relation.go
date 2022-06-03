@@ -16,3 +16,9 @@ func UnFollow(userid string, toid string) error {
 		ToUserId: toid}
 	return repository.DeleteFollow(newSubscribe)
 }
+
+func SearchFollow(userid string, toid string) bool {
+	newSubscribe := model.Follow{UserId: userid,
+		ToUserId: toid}
+	return repository.SearchFollow(newSubscribe)
+}

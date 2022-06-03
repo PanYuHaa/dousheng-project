@@ -14,16 +14,22 @@ func RelationAction(c *gin.Context) {
 	if t, exist := usersLoginInfo[token]; exist {
 		t := strconv.FormatInt(t.Id, 10)
 		if ActionType == "1" {
-			err := service.Follow(t, toid)
-			if err != nil {
+			if !service.SearchFollow(t, toid) {
+				err := service.Follow(t, toid)
+				if err != nil {
+					c.JSON(http.StatusOK, UserLoginResponse{
+						Response: Response{StatusCode: 1, StatusMsg: "Follow failed"},
+					})
+					return
+				}
 				c.JSON(http.StatusOK, UserLoginResponse{
-					Response: Response{StatusCode: 1, StatusMsg: "Follow failed"},
+					Response: Response{StatusCode: 0, StatusMsg: "Follow success"},
 				})
-				return
+			} else {
+				c.JSON(http.StatusOK, UserLoginResponse{
+					Response: Response{StatusCode: 1, StatusMsg: "Already Follow"},
+				})
 			}
-			c.JSON(http.StatusOK, UserLoginResponse{
-				Response: Response{StatusCode: 0, StatusMsg: "Follow success"},
-			})
 		} else if ActionType == "2" {
 			err := service.UnFollow(t, toid)
 			if err != nil {
