@@ -7,3 +7,9 @@ type User struct {
 	FollowerCount int64  `json:"follower_count,omitempty"`
 	IsFollow      bool   `json:"is_follow,omitempty"`
 }
+
+type Account struct {
+	Id       int64  `json:"id,omitempty"`
+	UserName string `json:"username,omitempty"`
+	PassWord string `json:"password,omitempty"`
+}

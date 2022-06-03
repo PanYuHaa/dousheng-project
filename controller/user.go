@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dousheng-demo/middleware"
 	"dousheng-demo/model"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
@@ -40,26 +41,37 @@ func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password
-
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := usersLoginInfo[username]; exist {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "User already exist"},
 		})
 	} else {
+		// 创建账户，生成用户
 		atomic.AddInt64(&userIdSequence, 1)
+		newAccount := model.Account{
+			Id:       userIdSequence,
+			UserName: username,
+			PassWord: password,
+		}
 		newUser := model.User{
 			Id:   userIdSequence,
 			Name: username,
 		}
-		usersLoginInfo[token] = newUser
-		err := service.AddUser(newUser) // 拉取当前登录用户的全部信息，并存储到本地
+		usersLoginInfo[username] = newUser          // 将生成的用户装进map，username作为key
+		err := service.AddUser(newUser, newAccount) // 拉取当前账户及其用户的信息，并存储到数据库
 		if err != nil {
 			c.JSON(http.StatusOK, UserResponse{
 				Response: Response{StatusCode: 1, StatusMsg: "Failed to save"},
 			})
 			return
 		}
+		// 签发token
+		newClaim := middleware.UserClaims{
+			Id:   userIdSequence,
+			Name: username,
+		}
+		token := middleware.GenerateToken(newClaim)
+
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
 			UserId:   userIdSequence,
@@ -72,9 +84,23 @@ func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
-	token := username + password // 使用加密方法生成token
+	// 校验账户密码（保证账户的唯一性）
+	if !service.IdentityVerify(username, password) {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "Username or password failed"},
+		})
+		return
+	}
 
-	if user, exist := usersLoginInfo[token]; exist {
+	// map缓存所有用户对象，并用username作为key，通过唯一的username来查找User对象
+	if user, exist := usersLoginInfo[username]; exist {
+		// 签发token，目前没有加入过期校验
+		newClaim := middleware.UserClaims{
+			Id:   user.Id,
+			Name: username,
+		}
+		token := middleware.GenerateToken(newClaim)
+
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
 			UserId:   user.Id,
@@ -88,9 +114,11 @@ func Login(c *gin.Context) {
 }
 
 func UserInfo(c *gin.Context) {
-	token := c.Query("token")
+	// token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := usersLoginInfo[claim.Name]; exist {
 		c.JSON(http.StatusOK, UserResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
 			User:     user,

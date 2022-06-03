@@ -25,6 +25,7 @@ func Init() {
 	err = InitFollow()
 	err = InitComment()
 	err = InitVideoComment()
+	err = InitAccount()
 	if err != nil {
 		panic(err)
 	} else {
@@ -98,5 +99,15 @@ func InitVideoComment() error {
 		return nil
 	}
 	err = m.CreateTable(&model.VideoComment{})
+	return err
+}
+
+func InitAccount() error {
+	var err error
+	m := DB.Migrator()
+	if m.HasTable(&model.Account{}) {
+		return nil
+	}
+	err = m.CreateTable(&model.Account{})
 	return err
 }

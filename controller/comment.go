@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dousheng-demo/middleware"
 	"dousheng-demo/model"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
@@ -24,10 +25,12 @@ var commentIdSequence = int64(0)
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
-	token := c.Query("token")
+	//token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
 	actionType := c.Query("action_type")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := usersLoginInfo[claim.Name]; exist {
 		if actionType == "1" {
 			atomic.AddInt64(&commentIdSequence, 1)
 			text := c.Query("comment_text")
@@ -63,9 +66,11 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
-	token := c.Query("token")
+	//token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
 	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := usersLoginInfo[claim.Name]; exist {
 		c.JSON(http.StatusOK, CommentListResponse{
 			Response:    Response{StatusCode: 0},
 			CommentList: service.GetCommentList(videoId),

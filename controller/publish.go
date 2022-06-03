@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dousheng-demo/middleware"
 	"dousheng-demo/model"
 	"dousheng-demo/service"
 	"fmt"
@@ -18,8 +19,12 @@ type VideoListResponse struct {
 func Publish(c *gin.Context) {
 	title := c.PostForm("title")
 	token := c.PostForm("token")
+	if token == "" {
+		panic("token not exist !")
+	}
+	claim := middleware.ParseToken(token)
 
-	if _, exist := usersLoginInfo[token]; !exist {
+	if _, exist := usersLoginInfo[claim.Name]; !exist {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -46,7 +51,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	// 更新video数据表
-	if err = service.PublishVideo(user.Name, finalName, title); err != nil {
+	if err = service.PublishVideo(user, finalName, title); err != nil {
 		c.JSON(http.StatusOK, Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
@@ -67,8 +72,10 @@ func PublishList(c *gin.Context) {
 	//userId, _ = strconv.ParseInt(userIdStr, 10, 64)
 
 	// 用token来找，因为登录状态下才有PublishList
-	token := c.Query("token")
-	userId := usersLoginInfo[token].Id
+	//token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
+	userId := usersLoginInfo[claim.Name].Id
 
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{

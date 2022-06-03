@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dousheng-demo/middleware"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,9 +11,11 @@ import (
 func FavoriteAction(c *gin.Context) {
 	//UserId := c.Query("user_id")
 	VideoId := c.Query("video_id")
-	token := c.Query("token")
+	//token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
 	ActionType := c.Query("action_type")
-	if t, exist := usersLoginInfo[token]; exist {
+	if t, exist := usersLoginInfo[claim.Name]; exist {
 		UserId := strconv.FormatInt(t.Id, 10)
 		if ActionType == "1" {
 			if !service.SearchFavorite(UserId, VideoId) {
@@ -55,9 +58,11 @@ func FavoriteAction(c *gin.Context) {
 }
 
 func FavoriteList(c *gin.Context) {
-	token := c.Query("token")
+	//token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
 	UserId := c.Query("user_id")
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := usersLoginInfo[claim.Name]; exist {
 		if service.FavoriteListRsp() {
 			c.JSON(http.StatusOK, FeedResponse{
 				VideoList: service.FavoriteList(UserId),

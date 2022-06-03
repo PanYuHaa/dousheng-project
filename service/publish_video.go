@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func PublishVideo(name string, finalName string, title string) error {
+func PublishVideo(user model.User, finalName string, title string) error {
 	// playUrl := "http://[$主机ip]:8080/static/video/" + finalName
 	playUrl := "http://192.168.10.103:8080/static/video/" + finalName
 	err := getSnapshot(finalName)
@@ -18,8 +18,11 @@ func PublishVideo(name string, finalName string, title string) error {
 	// coverUrl := "http://[$主机ip]:8080/static/video/" + finalName
 	coverUrl := "http://192.168.10.103:8080/static/cover/" + getPicName(finalName)
 	return repository.AddVideo(model.Video{
-		Id:         repository.VideoAmount() + 1,
-		Author:     model.User{Name: name},
+		Id: repository.VideoAmount() + 1,
+		Author: model.User{
+			Id:   user.Id,
+			Name: user.Name,
+		},
 		PlayUrl:    playUrl,
 		CoverUrl:   coverUrl,
 		Title:      title,
