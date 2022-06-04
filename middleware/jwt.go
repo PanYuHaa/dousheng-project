@@ -17,18 +17,18 @@ type UserClaims struct {
 var (
 	// MyJWTKey 自定义的token秘钥
 	MyJWTKey = []byte("SuperKey")
-	//该路由下不校验token
-	noVerify = []interface{}{"/douyin/feed/", "/douyin/user/", "/douyin/user/register/", "/douyin/user/login/", "/douyin/publish/action/"}
 	//token有效时间（纳秒）
 	effectTime = 2 * time.Hour
+	//换票区间
+	bufferTime = int64(2 * time.Minute)
 )
 
-func GenerateToken(claims UserClaims) string {
+// GenerateToken 生成token
+func GenerateToken(claims *UserClaims) string {
 	var err error
 	//设置token有效期，也可不设置有效期，采用redis的方式
 	//   1)将token存储在redis中，设置过期时间，token如没过期，则自动刷新redis过期时间
 	//   2)通过这种方式，可以很方便的为token续期，而且也可以实现长时间不登录的话，强制登录
-	//本例只是简单采用 设置token有效期的方式，只是提供了刷新token的方法，并没有做续期处理的逻辑
 	claims.ExpiresAt = time.Now().Add(effectTime).Unix()
 	claims.Issuer = "douyin"
 	// 生成token，并签名生成JWT
@@ -41,7 +41,7 @@ func GenerateToken(claims UserClaims) string {
 	return token
 }
 
-// 解析Token
+// ParseToken 解析Token
 func ParseToken(tokenString string) *UserClaims {
 	// 解析token
 	token, err := jwt.ParseWithClaims(tokenString, &UserClaims{}, func(token *jwt.Token) (interface{}, error) {
@@ -57,13 +57,29 @@ func ParseToken(tokenString string) *UserClaims {
 	return claims
 }
 
-// 验证token
+// JwtVerify 验证token
 func JwtVerify(c *gin.Context) {
 	// 过滤是否验证token，暂时空着
 	token := c.Query("token")
 	if token == "" {
 		panic("token not exist !")
 	}
+	// 如果到了换票的时间区间
+	claims := ParseToken(token)
+	if claims.ExpiresAt-time.Now().Unix() < bufferTime {
+		token = Refresh(claims)
+	}
 	// 验证token，并存储在请求中
 	c.Set("userClaim", ParseToken(token))
+}
+
+// Refresh 刷新token
+func Refresh(claims *UserClaims) string {
+	//jwt.TimeFunc = func() time.Time {
+	//	return time.Unix(0, 0)
+	//}
+	//claims := ParseToken(tokenString)
+	//jwt.TimeFunc = time.Now
+	//claims.StandardClaims.ExpiresAt = time.Now().Add(2 * time.Hour).Unix()
+	return GenerateToken(claims)
 }

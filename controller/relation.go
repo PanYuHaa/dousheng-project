@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"dousheng-demo/middleware"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -8,10 +9,11 @@ import (
 )
 
 func RelationAction(c *gin.Context) {
-	token := c.Query("token")
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
 	toid := c.Query("to_user_id")
 	ActionType := c.Query("action_type")
-	if t, exist := usersLoginInfo[token]; exist {
+	if t, exist := usersLoginInfo[claim.Name]; exist {
 		t := strconv.FormatInt(t.UserId, 10)
 		if ActionType == "1" {
 			if !service.SearchFollow(t, toid) {

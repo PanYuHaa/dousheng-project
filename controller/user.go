@@ -70,7 +70,7 @@ func Register(c *gin.Context) {
 			Id:   userIdSequence,
 			Name: username,
 		}
-		token := middleware.GenerateToken(newClaim)
+		token := middleware.GenerateToken(&newClaim)
 
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
@@ -99,7 +99,7 @@ func Login(c *gin.Context) {
 			Id:   user.UserId,
 			Name: username,
 		}
-		token := middleware.GenerateToken(newClaim)
+		token := middleware.GenerateToken(&newClaim)
 
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 0, StatusMsg: "Success"},
