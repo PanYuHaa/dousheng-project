@@ -2,10 +2,12 @@ package controller
 
 import (
 	"dousheng-demo/middleware"
+	"dousheng-demo/model"
 	"dousheng-demo/service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func RelationAction(c *gin.Context) {
@@ -47,6 +49,35 @@ func RelationAction(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "User don't exist"},
+		})
+	}
+}
+
+type FollowlistResponse struct {
+	Response
+	FollwList []model.User `json:"video_list,omitempty"`
+	NextTime  int64        `json:"next_time,omitempty"`
+}
+
+func FollowList(c *gin.Context) {
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
+	userId := c.Query("user_id")
+	if _, exist := usersLoginInfo[claim.Name]; exist {
+		if service.FollowListRsp() {
+			c.JSON(http.StatusOK, FollowlistResponse{
+				FollwList: service.FollowList(userId),
+				Response:  Response{StatusCode: 1, StatusMsg: "FollowList"},
+			})
+			return
+		}
+		c.JSON(http.StatusOK, FollowlistResponse{
+			FollwList: service.FollowList(userId),
+			Response:  Response{StatusCode: -1, StatusMsg: "No FollowList"},
+		})
+	} else {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "User don't login"},
 		})
 	}
 }

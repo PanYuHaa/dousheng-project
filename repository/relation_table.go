@@ -40,3 +40,9 @@ func SearchFollow(subscribe model.Follow) bool {
 		return true
 	}
 }
+
+func GetUserFollow(UserId string) []string {
+	var Ids []string
+	DB.Raw("select * from users where user_id=?", UserId).Scan(&Ids)
+	return Ids
+}

@@ -3,9 +3,10 @@ package controller
 import (
 	"dousheng-demo/middleware"
 	"dousheng-demo/service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 func FavoriteAction(c *gin.Context) {
@@ -65,13 +66,13 @@ func FavoriteList(c *gin.Context) {
 	if _, exist := usersLoginInfo[claim.Name]; exist {
 		if service.FavoriteListRsp() {
 			c.JSON(http.StatusOK, FeedResponse{
-				VideoList: service.FavoriteList(UserId),
+				FollwList: service.FavoriteList(UserId),
 				Response:  Response{StatusCode: 1, StatusMsg: "Favorite video"},
 			})
 			return
 		}
 		c.JSON(http.StatusOK, FeedResponse{
-			VideoList: service.FavoriteList(UserId),
+			FollwList: service.FavoriteList(UserId),
 			Response:  Response{StatusCode: -1, StatusMsg: "No Favorite Videos"},
 		})
 	} else {
