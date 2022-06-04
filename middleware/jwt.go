@@ -20,7 +20,7 @@ var (
 	//token有效时间（纳秒）
 	effectTime = 2 * time.Hour
 	//换票区间
-	bufferTime = int64(2 * time.Minute)
+	bufferTime = int64(5 * time.Minute)
 )
 
 // GenerateToken 生成token
