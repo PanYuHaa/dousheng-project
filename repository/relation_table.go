@@ -1,33 +1,42 @@
 package repository
 
-import "dousheng-demo/model"
+import (
+	"dousheng-demo/model"
+	"gorm.io/gorm"
+)
 
 func AddNewFollow(subscribe model.Follow) error {
 	mu.Lock()
 	defer mu.Unlock()
-	dbRes := DB.Model(&model.Follow{}).Create(&subscribe)
-	var user, touser model.User
-	DB.Table("users").Find(&user, subscribe.UserId)
-	user.FollowCount++
-	DB.Save(&user)
-	DB.Table("users").Find(&touser, subscribe.ToUserId)
-	touser.FollowerCount++
-	DB.Save(&touser)
-	return dbRes.Error
+	return DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&model.Follow{}).Create(&subscribe).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.User{}).Where("user_id = ?", subscribe.ToUserId).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.User{}).Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 func DeleteFollow(subscribe model.Follow) error {
 	mu.Lock()
 	defer mu.Unlock()
-	dbRes := DB.Where("to_user_id = ? ", subscribe.ToUserId).Where("user_id = ?", subscribe.UserId).Delete(&model.Follow{})
-	var user, touser model.User
-	DB.Table("users").Find(&user, subscribe.UserId)
-	user.FollowCount--
-	DB.Save(&user)
-	DB.Table("users").Find(&touser, subscribe.ToUserId)
-	touser.FollowerCount--
-	DB.Save(&touser)
-	return dbRes.Error
+	return DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&model.Follow{}).Where("to_user_id = ? ", subscribe.ToUserId).Where("user_id = ?", subscribe.UserId).Delete(&subscribe).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.User{}).Where("user_id = ?", subscribe.ToUserId).Update("follower_count", gorm.Expr("follower_count + ?", -1)).Error; err != nil {
+			return err
+		}
+		if err := tx.Model(&model.User{}).Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", -1)).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 func SearchFollow(subscribe model.Follow) bool {
