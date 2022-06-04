@@ -53,10 +53,10 @@ func RelationAction(c *gin.Context) {
 	}
 }
 
-type FollowlistResponse struct {
+type FollowListResponse struct {
 	Response
-	FollwList []model.User `json:"video_list,omitempty"`
-	NextTime  int64        `json:"next_time,omitempty"`
+	FollowList []model.User `json:"video_list,omitempty"`
+	NextTime   int64        `json:"next_time,omitempty"`
 }
 
 func FollowList(c *gin.Context) {
@@ -65,15 +65,15 @@ func FollowList(c *gin.Context) {
 	userId := c.Query("user_id")
 	if _, exist := usersLoginInfo[claim.Name]; exist {
 		if service.FollowListRsp() {
-			c.JSON(http.StatusOK, FollowlistResponse{
-				FollwList: service.FollowList(userId),
-				Response:  Response{StatusCode: 1, StatusMsg: "FollowList"},
+			c.JSON(http.StatusOK, FollowListResponse{
+				FollowList: service.FollowList(userId),
+				Response:   Response{StatusCode: 1, StatusMsg: "FollowList"},
 			})
 			return
 		}
-		c.JSON(http.StatusOK, FollowlistResponse{
-			FollwList: service.FollowList(userId),
-			Response:  Response{StatusCode: -1, StatusMsg: "No FollowList"},
+		c.JSON(http.StatusOK, FollowListResponse{
+			FollowList: service.FollowList(userId),
+			Response:   Response{StatusCode: -1, StatusMsg: "No FollowList"},
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
