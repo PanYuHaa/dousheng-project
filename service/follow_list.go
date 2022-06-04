@@ -12,7 +12,7 @@ var userId string
 var Id string
 
 func FollowList(userId string) []model.User {
-	FollowList := make([]model.User, 0)
+	followList := make([]model.User, 0)
 	UserIds := repository.GetUserFollow(userId)
 	for _, Id = range UserIds {
 		i++
@@ -20,10 +20,10 @@ func FollowList(userId string) []model.User {
 		if err != nil {
 			fmt.Printf("wrong!")
 		}
-		FollowList = append(FollowList, repository.GetUserById(Id64))
+		followList = append(followList, repository.GetUserById(Id64))
 	}
 
-	return FollowList
+	return followList
 }
 
 func FollowListRsp() bool {
