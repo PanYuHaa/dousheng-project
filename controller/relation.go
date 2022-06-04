@@ -10,6 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type FollowListResponse struct {
+	Response
+	FollowList []model.User `json:"video_list,omitempty"`
+	NextTime   int64        `json:"next_time,omitempty"`
+}
+
 func RelationAction(c *gin.Context) {
 	userClaim, _ := c.Get("userClaim")
 	claim := userClaim.(*middleware.UserClaims)
@@ -51,12 +57,6 @@ func RelationAction(c *gin.Context) {
 			Response: Response{StatusCode: 1, StatusMsg: "User don't exist"},
 		})
 	}
-}
-
-type FollowListResponse struct {
-	Response
-	FollowList []model.User `json:"video_list,omitempty"`
-	NextTime   int64        `json:"next_time,omitempty"`
 }
 
 func FollowList(c *gin.Context) {
