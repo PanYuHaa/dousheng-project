@@ -10,10 +10,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type FollowListResponse struct {
+type UserListResponse struct {
 	Response
-	FollowList []model.User `json:"video_list,omitempty"`
-	NextTime   int64        `json:"next_time,omitempty"`
+	UserList []model.User `json:"user_list"`
 }
 
 func RelationAction(c *gin.Context) {
@@ -62,18 +61,11 @@ func RelationAction(c *gin.Context) {
 func FollowList(c *gin.Context) {
 	userClaim, _ := c.Get("userClaim")
 	claim := userClaim.(*middleware.UserClaims)
-	userId := c.Query("user_id")
+	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if _, exist := usersLoginInfo[claim.Name]; exist {
-		if service.FollowListRsp() {
-			c.JSON(http.StatusOK, FollowListResponse{
-				FollowList: service.FollowList(userId),
-				Response:   Response{StatusCode: 1, StatusMsg: "FollowList"},
-			})
-			return
-		}
-		c.JSON(http.StatusOK, FollowListResponse{
-			FollowList: service.FollowList(userId),
-			Response:   Response{StatusCode: -1, StatusMsg: "No FollowList"},
+		c.JSON(http.StatusOK, UserListResponse{
+			Response: Response{StatusCode: 0},
+			UserList: service.GetFollowList(userId),
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{

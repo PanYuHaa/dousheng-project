@@ -50,8 +50,8 @@ func SearchFollow(subscribe model.Follow) bool {
 	}
 }
 
-func GetUserFollow(UserId string) []string {
-	var Ids []string
-	DB.Raw("select * from users where user_id=?", UserId).Scan(&Ids)
+func GetUserFollow(userId int64) []int64 {
+	var Ids []int64
+	DB.Table("follows").Where("user_id = ?", userId).Select("to_user_id").Find(&Ids)
 	return Ids
 }
