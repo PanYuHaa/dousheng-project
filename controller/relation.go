@@ -69,7 +69,24 @@ func FollowList(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 1, StatusMsg: "User don't login"},
+			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
+		})
+	}
+}
+
+// FollowerList all users have same follower list
+func FollowerList(c *gin.Context) {
+	userClaim, _ := c.Get("userClaim")
+	claim := userClaim.(*middleware.UserClaims)
+	toUserId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
+	if _, exist := usersLoginInfo[claim.Name]; exist {
+		c.JSON(http.StatusOK, UserListResponse{
+			Response: Response{StatusCode: 0},
+			UserList: service.GetFollowerList(toUserId),
+		})
+	} else {
+		c.JSON(http.StatusOK, UserLoginResponse{
+			Response: Response{StatusCode: 1, StatusMsg: "User doesn't exist"},
 		})
 	}
 }

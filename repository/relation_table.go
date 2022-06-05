@@ -55,3 +55,9 @@ func GetUserFollow(userId int64) []int64 {
 	DB.Table("follows").Where("user_id = ?", userId).Select("to_user_id").Find(&Ids)
 	return Ids
 }
+
+func GetUserFollower(toUserId int64) []int64 {
+	var Ids []int64
+	DB.Table("follows").Where("to_user_id = ?", toUserId).Select("user_id").Find(&Ids)
+	return Ids
+}
