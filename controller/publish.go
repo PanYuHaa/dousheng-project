@@ -39,7 +39,7 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)                 // filepath.Base()返回路径最后一个元素
-	user := usersLoginInfo[token]                            // token验证
+	user := usersLoginInfo[claim.Name]                       // token验证
 	finalName := fmt.Sprintf("%d_%s", user.UserId, filename) // 格式化字符串拼接
 	saveFile := filepath.Join("./public/video", finalName)   // filepath.Join()连接路径，saveFile文件保存的目标地址。
 	// 存储视频在服务端
