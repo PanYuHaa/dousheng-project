@@ -38,9 +38,9 @@ func GetVideoById(videoId int64) model.Video {
 	return video
 }
 
-func GetVideosByName(nickname string) []model.Video {
+func GetVideosByUserId(user model.User) []model.Video {
 	var videos []model.Video
-	DB.Model(&model.Video{}).Where("name = ?", nickname).Find(&videos)
+	DB.Table("videos").Where("user_id = ?", user.UserId).Find(&videos)
 	return videos
 }
 
@@ -54,7 +54,7 @@ func TimeLimitAmount(timeLimit int64) int64 {
 }
 
 func VideoAmount() int64 {
-	// 从db中获取截止时间内的数量
+	// 从db中获取视频的数量
 	var count int64
 	DB.Model(&model.Video{}).Where("name != ?", "").Count(&count)
 	return count

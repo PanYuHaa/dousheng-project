@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
+	"strconv"
 )
 
 type VideoListResponse struct {
@@ -66,16 +67,18 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	// 用user_id来找
-	//userIdStr := c.Query("user_id")
-	//var userId int64
-	//userId, _ = strconv.ParseInt(userIdStr, 10, 64)
-
-	// 用token来找，因为登录状态下才有PublishList
 	//token := c.Query("token")
+	// token校验
 	userClaim, _ := c.Get("userClaim")
 	claim := userClaim.(*middleware.UserClaims)
-	userId := usersLoginInfo[claim.Name].UserId
+	if _, exist := usersLoginInfo[claim.Name]; !exist {
+		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		return
+	}
+
+	userIdStr := c.Query("user_id")
+	var userId int64
+	userId, _ = strconv.ParseInt(userIdStr, 10, 64)
 
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
