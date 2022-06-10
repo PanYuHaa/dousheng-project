@@ -32,7 +32,7 @@ func CommentAction(c *gin.Context) {
 
 	if user, exist := usersLoginInfo[claim.Name]; exist {
 		if actionType == "1" {
-			atomic.AddInt64(&commentIdSequence, 1)
+			atomic.AddInt64(&commentIdSequence, 1) // 原子操作防止脏读
 			text := c.Query("comment_text")
 			videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 			t := time.Now()

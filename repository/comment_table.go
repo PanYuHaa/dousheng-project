@@ -8,6 +8,8 @@ import (
 //	Add
 
 func AddComment(comment model.Comment, videoId int64) error {
+	mu.Lock()
+	defer mu.Unlock()
 	commentId := comment.Id
 	// 开启事务
 	return DB.Transaction(func(tx *gorm.DB) error {
@@ -37,6 +39,8 @@ func AddComment(comment model.Comment, videoId int64) error {
 //	Delete
 
 func DeleteCommentById(commentId int64, videoId int64) error {
+	mu.Lock()
+	defer mu.Unlock()
 	// 开启事务
 	return DB.Transaction(func(tx *gorm.DB) error {
 		// 在事务中执行一些 db 操作（从这里开始，您应该使用 'tx' 而不是 'db'）

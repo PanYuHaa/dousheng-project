@@ -39,9 +39,9 @@ func GetAccount(username string, password string) model.Account {
 	return account
 }
 
-func GetUsersAmount() int64 {
-	// 从db中获取user的数量(ID)
-	var count int64
-	DB.Model(&model.User{}).Where("nick_name != ?", "").Count(&count)
-	return count
-}
+//func GetUsersAmount() int64 {
+//	// 从db中获取user的数量(ID)
+//	var count int64
+//	DB.Model(&model.User{}).Where("nick_name != ?", "").Count(&count)
+//	return count
+//}

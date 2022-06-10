@@ -23,12 +23,13 @@ import (
 //		return nil
 //	})
 //}
-func DeleteFavorite(favorite model.Favorite) error {
-	mu.Lock()
-	defer mu.Unlock()
-	dbRes := DB.Where("video_id = ? ", favorite.VideoId).Where("user_id = ?", favorite.UserId).Delete(&model.Favorite{})
-	return dbRes.Error
-}
+
+//func DeleteFavorite(favorite model.Favorite) error {
+//	mu.Lock()
+//	defer mu.Unlock()
+//	dbRes := DB.Where("video_id = ? ", favorite.VideoId).Where("user_id = ?", favorite.UserId).Delete(&model.Favorite{})
+//	return dbRes.Error
+//}
 
 func GetFavoriteVideos(userId int64) []int64 {
 	var Ids []int64

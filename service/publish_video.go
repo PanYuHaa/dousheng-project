@@ -5,8 +5,11 @@ import (
 	"dousheng-demo/repository"
 	"os"
 	"os/exec"
+	"sync/atomic"
 	"time"
 )
+
+var videoId = repository.VideoAmount()
 
 func PublishVideo(user model.User, finalName string, title string) error {
 	// playUrl := "http://[$主机ip]:8080/static/video/" + finalName
@@ -17,8 +20,10 @@ func PublishVideo(user model.User, finalName string, title string) error {
 	}
 	// coverUrl := "http://[$主机ip]:8080/static/video/" + finalName
 	coverUrl := "http://192.168.10.103:8080/static/cover/" + getPicName(finalName)
+	atomic.AddInt64(&videoId, 1) // 原子增加防止出现脏读
 	return repository.AddVideo(model.Video{
-		Id: repository.VideoAmount() + 1,
+		//Id: repository.VideoAmount() + 1,
+		Id: videoId,
 		Author: model.User{
 			UserId: user.UserId,
 			Name:   user.Name,
