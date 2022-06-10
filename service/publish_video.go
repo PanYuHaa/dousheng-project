@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var videoId = repository.VideoAmount()
+var videoId = int64(4)
 
 func PublishVideo(user model.User, finalName string, title string) error {
 	// playUrl := "http://[$主机ip]:8080/static/video/" + finalName
