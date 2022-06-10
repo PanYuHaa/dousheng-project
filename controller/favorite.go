@@ -62,17 +62,17 @@ func FavoriteList(c *gin.Context) {
 	//token := c.Query("token")
 	userClaim, _ := c.Get("userClaim")
 	claim := userClaim.(*middleware.UserClaims)
-	UserId := c.Query("user_id")
+	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if _, exist := usersLoginInfo[claim.Name]; exist {
 		if service.FavoriteListRsp() {
-			c.JSON(http.StatusOK, FeedResponse{
-				FollwList: service.FavoriteList(UserId),
+			c.JSON(http.StatusOK, VideoListResponse{
+				VideoList: service.FavoriteList(userId),
 				Response:  Response{StatusCode: 1, StatusMsg: "Favorite video"},
 			})
 			return
 		}
-		c.JSON(http.StatusOK, FeedResponse{
-			FollwList: service.FavoriteList(UserId),
+		c.JSON(http.StatusOK, VideoListResponse{
+			VideoList: service.FavoriteList(userId),
 			Response:  Response{StatusCode: -1, StatusMsg: "No Favorite Videos"},
 		})
 	} else {

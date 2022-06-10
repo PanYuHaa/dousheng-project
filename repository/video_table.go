@@ -2,6 +2,7 @@ package repository
 
 import (
 	"dousheng-demo/model"
+	"gorm.io/gorm"
 )
 
 //	Add
@@ -10,23 +11,45 @@ func AddVideo(video model.Video) error {
 	dbRes := DB.Model(&model.Video{}).Create(&video)
 	return dbRes.Error
 }
-func AddVideoFavorite(VideoId string) error {
+func AddVideoFavorite(VideoId string, favorite model.Favorite) error {
 	mu.Lock()
 	defer mu.Unlock()
 	var video model.Video
-	dbRes := DB.First(&video, VideoId)
-	video.FavoriteCount++
-	DB.Save(&video)
-	return dbRes.Error
+	//dbRes := DB.First(&video, VideoId)
+	//video.FavoriteCount++
+	//DB.Save(&video)
+	//return dbRes.Error
+	return DB.Transaction(func(tx *gorm.DB) error {
+		// favorite table
+		if err := tx.Model(&model.Favorite{}).Create(&favorite).Error; err != nil {
+			return err
+		}
+		// videos table
+		if err := tx.First(&video, VideoId).Update("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
-func DeleteVideoFavorite(VideoId string) error {
+func DeleteVideoFavorite(VideoId string, favorite model.Favorite) error {
 	mu.Lock()
 	defer mu.Unlock()
 	var video model.Video
-	dbRes := DB.First(&video, VideoId)
-	video.FavoriteCount--
-	DB.Save(&video)
-	return dbRes.Error
+	//dbRes := DB.First(&video, VideoId)
+	//video.FavoriteCount--
+	//DB.Save(&video)
+	//return dbRes.Error
+	return DB.Transaction(func(tx *gorm.DB) error {
+		// favorite table
+		if err := tx.Model(&model.Favorite{}).Where("user_id = ? ", favorite.UserId).Where("video_id = ?", favorite.VideoId).Delete(&favorite).Error; err != nil {
+			return err
+		}
+		// videos table
+		if err := tx.First(&video, VideoId).Update("favorite_count", gorm.Expr("favorite_count + ?", -1)).Error; err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
 //	Get
