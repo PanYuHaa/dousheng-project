@@ -33,9 +33,9 @@ func GetUserById(userId int64) model.User {
 	return user
 }
 
-func GetAccount(username string, password string) model.Account {
+func GetAccount(username string) model.Account {
 	var account model.Account
-	DB.Table("accounts").Where("user_name = ?", username).Where("pass_word = ?", password).Find(&account)
+	DB.Table("accounts").Where("user_name = ?", username).Find(&account)
 	return account
 }
 

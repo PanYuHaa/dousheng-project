@@ -4,7 +4,9 @@ import (
 	"dousheng-demo/middleware"
 	"dousheng-demo/model"
 	"dousheng-demo/service"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"sync/atomic"
 )
@@ -41,6 +43,12 @@ func Register(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")
 
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) //加密处理
+	if err != nil {
+		fmt.Println(err)
+	}
+	encodePWD := string(hash) // 保存在数据库的密码，虽然每次生成都不一样，只需保存一份便可
+
 	if _, exist := usersLoginInfo[username]; exist {
 		c.JSON(http.StatusOK, UserLoginResponse{
 			Response: Response{StatusCode: 1, StatusMsg: "User already exist"},
@@ -51,7 +59,7 @@ func Register(c *gin.Context) {
 		newAccount := model.Account{
 			Id:       userIdSequence,
 			UserName: username,
-			PassWord: password,
+			PassWord: encodePWD,
 		}
 		newUser := model.User{
 			UserId: userIdSequence,

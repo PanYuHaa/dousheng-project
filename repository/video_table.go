@@ -76,9 +76,9 @@ func TimeLimitAmount(timeLimit int64) int64 {
 	return count
 }
 
-func VideoAmount() int64 {
-	// 从db中获取视频的数量
-	var count int64
-	DB.Model(&model.Video{}).Where("name != ?", "").Count(&count)
-	return count
-}
+//func VideoAmount() int64 {
+//	// 从db中获取视频的数量
+//	var count int64
+//	DB.Model(&model.Video{}).Where("name != ?", "").Count(&count)
+//	return count
+//}

@@ -27,7 +27,7 @@ func initRouter(r *gin.Engine) {
 	apiRouter.GET("/comment/list/", middleware.JwtVerify, controller.CommentList)        //PYH
 
 	// extra apis - II
-	apiRouter.POST("/relation/action/", middleware.JwtVerify, controller.RelationAction) //CHY
-	apiRouter.GET("/relation/follow/list/", middleware.JwtVerify, controller.FollowList)
+	apiRouter.POST("/relation/action/", middleware.JwtVerify, controller.RelationAction)     //CHY
+	apiRouter.GET("/relation/follow/list/", middleware.JwtVerify, controller.FollowList)     //CQC
 	apiRouter.GET("/relation/follower/list/", middleware.JwtVerify, controller.FollowerList) //PYH
 }
