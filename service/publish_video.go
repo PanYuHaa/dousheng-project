@@ -13,7 +13,7 @@ var videoId = int64(4)
 
 func PublishVideo(user model.User, finalName string, title string) error {
 	// playUrl := "http://[$主机ip]:8080/static/video/" + finalName
-	playUrl := "http://192.168.10.103:8080/static/video/" + finalName
+	playUrl := "http://124.223.184.55:8080/static/video/" + finalName
 	err := getSnapshot(finalName)
 	if err != nil {
 		return err
@@ -40,7 +40,7 @@ func getSnapshot(finalName string) error {
 	inputPath := "./public/video/" + finalName
 	outputPath := "./public/cover/" + outPicName
 	// 调用ffmpeg应用程序进行视频截图
-	cmd := exec.Command("./ffmpeg", "-i", inputPath, "-ss", "1", "-f", "image2", "-frames:v", "1", outputPath)
+	cmd := exec.Command("ffmpeg", "-i", inputPath, "-ss", "1", "-f", "image2", "-frames:v", "1", outputPath)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	// 由于有些ffmpeg的bug没有解决所以暂时不反回error
