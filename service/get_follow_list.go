@@ -14,3 +14,7 @@ func GetFollowList(userId int64) []model.User {
 	}
 	return followList
 }
+
+func GetUserFollow(userId int64) []int64 {
+	return repository.GetUserFollow(userId)
+}

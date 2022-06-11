@@ -3,7 +3,6 @@ package controller
 import (
 	"dousheng-demo/middleware"
 	"dousheng-demo/model"
-	"dousheng-demo/repository"
 	"dousheng-demo/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -51,7 +50,7 @@ func Feed(c *gin.Context) {
 	userId := user.UserId
 	videos := service.GetVideoList() // 视频列表
 	// 处理显示是否关注
-	followIds := repository.GetUserFollow(userId) // 此用户id下关注的所有人
+	followIds := service.GetUserFollow(userId) // 此用户id下关注的所有人
 	for i := 0; i < len(videos); i++ {
 		for j := 0; j < len(followIds); j++ {
 			if videos[i].Author.UserId == followIds[j] {
@@ -61,7 +60,7 @@ func Feed(c *gin.Context) {
 		}
 	}
 	// 处理显示是否喜欢
-	favoriteIds := repository.GetFavoriteVideos(userId)
+	favoriteIds := service.GetFavoriteVideos(userId)
 	for i := 0; i < len(videos); i++ {
 		for j := 0; j < len(favoriteIds); j++ {
 			if videos[i].Id == favoriteIds[j] {

@@ -38,10 +38,3 @@ func GetAccount(username string) model.Account {
 	DB.Table("accounts").Where("user_name = ?", username).Find(&account)
 	return account
 }
-
-//func GetUsersAmount() int64 {
-//	// 从db中获取user的数量(ID)
-//	var count int64
-//	DB.Model(&model.User{}).Where("nick_name != ?", "").Count(&count)
-//	return count
-//}

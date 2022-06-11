@@ -43,3 +43,7 @@ func GetCreateTime() int64 {
 		return GetVideoList()[lastId].CreateTime // 获取最后一个播放视频的创建时间，用作下次提取list的开始
 	}
 }
+
+func GetFavoriteVideos(userId int64) []int64 {
+	return repository.GetFavoriteVideos(userId)
+}

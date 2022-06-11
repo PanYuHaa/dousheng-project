@@ -15,10 +15,6 @@ func AddVideoFavorite(VideoId string, favorite model.Favorite) error {
 	mu.Lock()
 	defer mu.Unlock()
 	var video model.Video
-	//dbRes := DB.First(&video, VideoId)
-	//video.FavoriteCount++
-	//DB.Save(&video)
-	//return dbRes.Error
 	return DB.Transaction(func(tx *gorm.DB) error {
 		// favorite table
 		if err := tx.Model(&model.Favorite{}).Create(&favorite).Error; err != nil {
@@ -35,10 +31,6 @@ func DeleteVideoFavorite(VideoId string, favorite model.Favorite) error {
 	mu.Lock()
 	defer mu.Unlock()
 	var video model.Video
-	//dbRes := DB.First(&video, VideoId)
-	//video.FavoriteCount--
-	//DB.Save(&video)
-	//return dbRes.Error
 	return DB.Transaction(func(tx *gorm.DB) error {
 		// favorite table
 		if err := tx.Model(&model.Favorite{}).Where("user_id = ? ", favorite.UserId).Where("video_id = ?", favorite.VideoId).Delete(&favorite).Error; err != nil {
@@ -75,10 +67,3 @@ func TimeLimitAmount(timeLimit int64) int64 {
 	DB.Model(&model.Video{}).Where("create_time < ?", timeLimit).Count(&count)
 	return count
 }
-
-//func VideoAmount() int64 {
-//	// 从db中获取视频的数量
-//	var count int64
-//	DB.Model(&model.Video{}).Where("name != ?", "").Count(&count)
-//	return count
-//}
