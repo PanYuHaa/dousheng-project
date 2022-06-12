@@ -3,7 +3,6 @@ package controller
 import (
 	"dousheng-demo/middleware"
 	"dousheng-demo/model"
-	"dousheng-demo/repository"
 	"dousheng-demo/service"
 	"net/http"
 	"strconv"
@@ -66,7 +65,7 @@ func FollowList(c *gin.Context) {
 	if _, exist := usersLoginInfo[claim.Name]; exist {
 		// 处理显示是否关注
 		user := usersLoginInfo[claim.Name]
-		followIds := repository.GetUserFollow(user.UserId) // 此用户id下关注的所有人
+		followIds := service.GetUserFollow(user.UserId) // 此用户id下关注的所有人
 		followList := service.GetFollowList(userId)
 		for i := 0; i < len(followList); i++ {
 			for j := 0; j < len(followIds); j++ {
@@ -93,9 +92,21 @@ func FollowerList(c *gin.Context) {
 	claim := userClaim.(*middleware.UserClaims)
 	toUserId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	if _, exist := usersLoginInfo[claim.Name]; exist {
+		// 处理显示是否关注
+		user := usersLoginInfo[claim.Name]
+		followIds := service.GetUserFollow(user.UserId) // 此用户id下关注的所有人
+		followList := service.GetFollowerList(toUserId)
+		for i := 0; i < len(followList); i++ {
+			for j := 0; j < len(followIds); j++ {
+				if followList[i].UserId == followIds[j] {
+					followList[i].IsFollow = true
+					break
+				}
+			}
+		}
 		c.JSON(http.StatusOK, UserListResponse{
 			Response: Response{StatusCode: 0},
-			UserList: service.GetFollowerList(toUserId),
+			UserList: followList,
 		})
 	} else {
 		c.JSON(http.StatusOK, UserLoginResponse{
