@@ -27,10 +27,11 @@
 * 视频上传后会保存到本地 public 目录中，访问时用 127.0.0.1:8080/static/video/video_name 即可
 
 ## 代码结构
-dousheng_project
-├── config 
-│   └── config.go // 设定基本配置信息（如数据库DSN）
-├── controller // 控制层
+```shell
+dousheng_project
+├── config 
+│   └── config.go // 设定基本配置信息（如数据库DSN）
+├── controller // 控制层
 │   ├── comment.go
 │   ├── favorite.go
 │   ├── feed.go
@@ -38,24 +39,24 @@
 │   ├── relation.go
 │   ├── response.go
 │   └── user.go
-├── middleware // 中间件
+├── middleware // 中间件
 │   └── jwt.go
-├── model // 数据模型层
+├── model // 数据模型层
 │   ├── comment.go
 │   ├── realtion.go
 │   ├── user.go
 │   └── video.go
-├── public // 视频与封面存储位置
+├── public // 视频与封面存储位置
 │   ├── cover
 │   └── video
-├── repository // 数据持久层
+├── repository // 数据持久层
 │   ├── db_init.go
 │   ├── comment_table.go
 │   ├── favorite_table.go
 │   ├── realtion_table.go
 │   ├── user_table.go
 │   └── video_table.go
-├── service // 业务逻辑层
+├── service // 业务逻辑层
 │   ├── comment_action.go
 │   ├── favorite_action.go
 │   ├── get_comment_list.go
@@ -69,7 +70,8 @@
 │   ├── service_init.go
 │   ├── user_login.go
 │   └── user_register.go
-├── go.mod
-│   └── go.sum
-├── main.go
-└── router.go
+├── go.mod
+│   └── go.sum
+├── main.go
+└── router.go
+```
