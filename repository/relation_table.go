@@ -20,13 +20,13 @@ func AddNewFollow(subscribe model.Follow) error {
 		if err := tx.Model(&model.User{}).Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
 			return err
 		}
-		// videos table
-		if err := tx.Table("videos").Where("user_id = ?", subscribe.ToUserId).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
-			return err
-		}
-		if err := tx.Table("videos").Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
-			return err
-		}
+		//// videos table
+		//if err := tx.Table("videos").Where("user_id = ?", subscribe.ToUserId).Update("follower_count", gorm.Expr("follower_count + ?", 1)).Error; err != nil {
+		//	return err
+		//}
+		//if err := tx.Table("videos").Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", 1)).Error; err != nil {
+		//	return err
+		//}
 		return nil
 	})
 }
@@ -46,13 +46,13 @@ func DeleteFollow(subscribe model.Follow) error {
 		if err := tx.Model(&model.User{}).Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", -1)).Error; err != nil {
 			return err
 		}
-		// videos table
-		if err := tx.Table("videos").Where("user_id = ?", subscribe.ToUserId).Update("follower_count", gorm.Expr("follower_count + ?", -1)).Error; err != nil {
-			return err
-		}
-		if err := tx.Table("videos").Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", -1)).Error; err != nil {
-			return err
-		}
+		//// videos table
+		//if err := tx.Table("videos").Where("user_id = ?", subscribe.ToUserId).Update("follower_count", gorm.Expr("follower_count + ?", -1)).Error; err != nil {
+		//	return err
+		//}
+		//if err := tx.Table("videos").Where("user_id = ?", subscribe.UserId).Update("follow_count", gorm.Expr("follow_count + ?", -1)).Error; err != nil {
+		//	return err
+		//}
 		return nil
 	})
 }
